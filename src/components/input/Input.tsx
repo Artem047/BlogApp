@@ -1,4 +1,4 @@
-import { IInput } from "../interface/input.interface";
+import { IInput } from "../../interface/input.interface";
 
 const Input = ({ placeholder, type }: IInput) => {
   return <input type={type} placeholder={placeholder} className="w-full h-16 placeholder:text-lg rounded-xl outline-none text-lg px-6" />;
