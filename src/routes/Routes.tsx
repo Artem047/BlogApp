@@ -3,13 +3,32 @@ import Root from "../pages/Root";
 import Auth from "../auth/Auth";
 import Login from "../auth/Login";
 import Register from "../auth/Register";
+import Home from "../pages/Home";
+import Collection from "../pages/Collection";
+import CreatePost from "../pages/CreatePost";
+import Profile from "../pages/Profile";
 
 export const router = createBrowserRouter([
     {
         path: '/',
         element: <Root />,
         children: [
-
+            {
+                path: '/',
+                element: <Home />
+            },
+            {
+                path: '/collection',
+                element: <Collection />
+            },
+            {
+                path: '/createpost',
+                element: <CreatePost />
+            },
+            {
+                path: '/profile',
+                element: <Profile />
+            }
         ],
     },
     {

@@ -10,4 +10,19 @@
 body{
   max-width: 1440px;
   width: 100%;
+  background-color: #F2F2F2;
+}
+.nav_link{
+  width: 220px;
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 14px 28px;
+  border-radius: 6px;
+
+}
+.nav_link:hover{
+  color: #00BD97;
+  background-color: white;
 }

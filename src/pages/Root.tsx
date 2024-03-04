@@ -1,17 +1,21 @@
-import { Outlet } from "react-router-dom"
-import Navbar from "../layout/Navbar"
+import { Outlet } from "react-router-dom";
+import Header from "../layout/Header";
+import Navbar from "../layout/Navbar";
 
 const Root = () => {
   return (
     <div>
-        <div>
-            <Navbar />
-        </div>
-        <div>
-            <Outlet />
-        </div>
+      <Header />
+      <div className="flex p-5">
+        <>
+          <Navbar />
+        </>
+        <>
+          <Outlet />
+        </>
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default Root
+export default Root;
