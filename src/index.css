@@ -22,7 +22,7 @@ body{
   border-radius: 6px;
 
 }
-.nav_link:hover{
+a.active{
   color: #00BD97;
   background-color: white;
 }

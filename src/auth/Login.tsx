@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom"
 import Button from "../components/button/Button"
 import Input from "../components/input/Input"
+import ImageComponent from "../components/imageComponent/ImageComponent"
 
 const Login = () => {
   return (
@@ -11,7 +12,7 @@ const Login = () => {
         className="w-[126px] h-12 bg-[#FFFFFF] rounded-md flex justify-center items-center gap-2 border border-[#00BD97]"
         type="button"
       >
-        <img src="/google.svg" alt="" />
+        <ImageComponent src="/google.svg" alt="Icon google" />
         <p className="text-base">Google</p>
       </Button>
       <div className="flex items-center w-full">
