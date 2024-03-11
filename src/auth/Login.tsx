@@ -21,8 +21,8 @@ const Login = () => {
         <hr color="#DBDBDB" className="w-full h-0.5" />
       </div>
       <form className="w-full flex flex-col items-center gap-4">
-        <Input type="email" placeholder="Email" />
-        <Input type="password" placeholder="Password" />
+        <Input name="email" type="email" placeholder="Email" />
+        <Input name="password" type="password" placeholder="Password" />
         <div className="flex gap-2">
           <p>don’t have an account?</p>
           <Link to="/auth/register" className="text-[#00BD97]">
