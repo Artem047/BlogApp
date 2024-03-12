@@ -1,11 +1,33 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Input from "../components/input/Input";
 import Button from "../components/button/Button";
 import ImageComponent from "../components/imageComponent/ImageComponent";
 import { useAuth } from "../context/AuthContext";
+import { useState } from "react";
+import { auth } from "../utils/firebase";
+import { updateProfile } from "firebase/auth";
 
 const Register = () => {
-  const { handleSubmit, handleChange } = useAuth();
+  const { signUpWithEmailAndPassword } = useAuth();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [displayName, setDisplayName] = useState("");
+  const navigate = useNavigate();
+
+  const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      await signUpWithEmailAndPassword(email, password);
+      const currentUser = auth.currentUser;
+      if (currentUser) {
+        await updateProfile(currentUser, { displayName });
+      }
+      navigate("/");
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <div className="flex text-center flex-col gap-5 items-center w-[400px]">
       <h1 className="font-bold text-4xl">Create Your Accout</h1>
@@ -22,10 +44,28 @@ const Register = () => {
         <p className="w-full">Or continue with</p>
         <hr color="#DBDBDB" className="w-full h-0.5" />
       </div>
-      <form className="w-full flex flex-col items-center gap-4" onSubmit={handleSubmit}>
-        <Input name="fullname" type="fullname" placeholder="Fullname" onChange={handleChange} />
-        <Input name="email" type="email" placeholder="Email" onChange={handleChange} />
-        <Input name="password" type="password" placeholder="Password" onChange={handleChange} />
+      <form
+        className="w-full flex flex-col items-center gap-4"
+        onSubmit={handleSignUp}
+      >
+        <Input
+          name="displayName"
+          type="text"
+          placeholder="Name"
+          onChange={(e) => setDisplayName(e.target.value)}
+        />
+        <Input
+          name="email"
+          type="email"
+          placeholder="Email"
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <Input
+          name="password"
+          type="password"
+          placeholder="Password"
+          onChange={(e) => setPassword(e.target.value)}
+        />
         <div className="flex gap-2">
           <p>have an account?</p>
           <Link to="/auth/login" className="text-[#00BD97]">

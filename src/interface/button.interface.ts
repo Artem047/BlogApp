@@ -4,4 +4,5 @@ export interface IButton extends React.ButtonHTMLAttributes<HTMLButtonElement>{
     children?: ReactNode;
     className: string;
     type?: "submit" | "reset" | "button";
+    onClick?: React.MouseEventHandler<HTMLButtonElement>;
 }
