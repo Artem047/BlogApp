@@ -1,66 +1,89 @@
+import {
+  User,
+  createUserWithEmailAndPassword,
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  signOut,
+} from "firebase/auth";
 import React, {
   ReactNode,
   createContext,
   useContext,
+  useEffect,
   useState,
 } from "react";
-import { supabase } from "../utils/supabase";
+import { auth } from "../utils/firebase";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+interface AuthContextType {
+  signInpWithEmailAndPassword: (email: string, password: string) => void;
+  signUpWithEmailAndPassword: (email: string, password: string) => void;
+  logOut: () => void;
+  user: User | null;
+}
 
 interface AuthProviderProps {
   children: ReactNode;
 }
-interface AuthContextType {
-  handleSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
-  handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-}
-
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const [formData, setFormData] = useState({
-    fullname: "",
-    email: "",
-    password: "",
-  });
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
+  const [user, setUser] = useState<User | null>(null);
+
+  const signInpWithEmailAndPassword = (email: string, password: string) => {
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        const newUser = userCredential.user;
+        setUser(newUser);
+        console.log(newUser);
+      })
+      .catch((error) => console.error(error.message));
+  };
+
+  const signUpWithEmailAndPassword = (email: string, password: string) => {
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        const newUser = userCredential.user;
+        setUser(newUser);
+        console.log(newUser);
+      })
+      .catch((error) => console.error(error.message));
+  };
+
+  const logOut = () => {
+    signOut(auth)
+      .then(() => {
+        setUser(null);
+      })
+      .catch((error) => console.error(error.message));
+  };
+
+  const contextValue: AuthContextType = {
+    signInpWithEmailAndPassword,
+    signUpWithEmailAndPassword,
+    logOut,
+    user,
+  };
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+      console.log("User", currentUser);
     });
-  };
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    try {
-      const { data ,error } = await supabase.auth.signUp({
-        email: formData.email,
-        password: formData.password,
-        options: {
-          data: {
-            fullname: formData.fullname,
-          },
-        },
-      });
-      if (error) throw error;
-      alert("Check your email for verification link");
-      console.log(data);
-    } catch (error) {
-      alert(error);
-    }
-  };
-  const contextValue: AuthContextType = { handleSubmit, handleChange };
+
+    return () => {
+      unsubscribe();
+    };
+  }, []);
 
   return (
-    <AuthContext.Provider value={contextValue}>
-      {children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
   );
 };
 
 export const useAuth = () => {
-    const context = useContext(AuthContext);
-    if (!context) {
-      throw new Error("useAuth must be used within an AuthProvider");
-    }
-    return context;
-  };
-  
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+  return context;
+};
