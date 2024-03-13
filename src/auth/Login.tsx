@@ -11,14 +11,15 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const handleSignIn = async () => {
+  const handleSignIn = () => {
     try {
-      await signInpWithEmailAndPassword(email, password);
+      signInpWithEmailAndPassword(email, password);
       navigate("/");
     } catch (error) {
       console.log(error);
     }
   }
+
   return (
     <div className="flex text-center flex-col gap-5 items-center w-[400px]">
       <h1 className="font-bold text-4xl">Welcome Back</h1>
@@ -56,7 +57,7 @@ const Login = () => {
         </div>
         <Button
           className="uppercase w-full h-14 bg-[#01BD97] text-white rounded-xl font-semibold text-xl"
-          type="submit"
+          type="button"
           onClick={handleSignIn}
         >
           Log In

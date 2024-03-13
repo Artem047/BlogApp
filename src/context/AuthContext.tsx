@@ -31,22 +31,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const signInpWithEmailAndPassword = (email: string, password: string) => {
     signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        const newUser = userCredential.user;
-        setUser(newUser);
-        console.log(newUser);
+      .then((data) => {
+        console.log(data);
       })
       .catch((error) => console.error(error.message));
   };
 
   const signUpWithEmailAndPassword = (email: string, password: string) => {
     createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        const newUser = userCredential.user;
-        setUser(newUser);
-        console.log(newUser);
+      .then((data) => {
+        console.log(data);
       })
-      .catch((error) => console.error(error.message));
+      .catch((error) => alert(error.message));
   };
 
   const logOut = () => {

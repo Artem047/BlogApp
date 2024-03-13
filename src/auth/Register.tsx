@@ -4,29 +4,24 @@ import Button from "../components/button/Button";
 import ImageComponent from "../components/imageComponent/ImageComponent";
 import { useAuth } from "../context/AuthContext";
 import { useState } from "react";
-import { auth } from "../utils/firebase";
-import { updateProfile } from "firebase/auth";
+
 
 const Register = () => {
   const { signUpWithEmailAndPassword } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [displayName, setDisplayName] = useState("");
   const navigate = useNavigate();
 
-  const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSignUp = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      await signUpWithEmailAndPassword(email, password);
-      const currentUser = auth.currentUser;
-      if (currentUser) {
-        await updateProfile(currentUser, { displayName });
-      }
-      navigate("/");
+      signUpWithEmailAndPassword(email, password)
+      navigate('/')
     } catch (error) {
       console.error(error);
     }
   };
+
 
   return (
     <div className="flex text-center flex-col gap-5 items-center w-[400px]">
@@ -48,12 +43,6 @@ const Register = () => {
         className="w-full flex flex-col items-center gap-4"
         onSubmit={handleSignUp}
       >
-        <Input
-          name="displayName"
-          type="text"
-          placeholder="Name"
-          onChange={(e) => setDisplayName(e.target.value)}
-        />
         <Input
           name="email"
           type="email"
