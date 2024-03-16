@@ -3,10 +3,10 @@ import Button from "../components/button/Button";
 import Input from "../components/input/Input";
 import ImageComponent from "../components/imageComponent/ImageComponent";
 import { useAuth } from "../context/AuthContext";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const Login = () => {
-  const { signInpWithEmailAndPassword } = useAuth();
+  const { signInpWithEmailAndPassword, googleSignIn, user } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
@@ -16,9 +16,23 @@ const Login = () => {
       signInpWithEmailAndPassword(email, password);
       navigate("/");
     } catch (error) {
+      console.error(error);
+    }
+  }
+
+  const handleGoogleSignIn = async () => {
+    try {
+      await googleSignIn();
+    } catch (error) {
       console.log(error);
     }
   }
+
+  useEffect(() => {
+    if(user != null){
+      navigate("/");
+    }
+  }, [user])
 
   return (
     <div className="flex text-center flex-col gap-5 items-center w-[400px]">
@@ -27,6 +41,7 @@ const Login = () => {
       <Button
         className="w-[126px] h-12 bg-[#FFFFFF] rounded-md flex justify-center items-center gap-2 border border-[#00BD97]"
         type="button"
+        onClick={handleGoogleSignIn}
       >
         <ImageComponent src="/google.svg" alt="Icon google" />
         <p className="text-base">Google</p>
@@ -36,7 +51,7 @@ const Login = () => {
         <p className="w-full">Or continue with</p>
         <hr color="#DBDBDB" className="w-full h-0.5" />
       </div>
-      <form className="w-full flex flex-col items-center gap-4">
+      <form className="w-full flex flex-col items-center gap-4" onSubmit={handleSignIn}>
         <Input
           name="email"
           type="email"
@@ -57,8 +72,7 @@ const Login = () => {
         </div>
         <Button
           className="uppercase w-full h-14 bg-[#01BD97] text-white rounded-xl font-semibold text-xl"
-          type="button"
-          onClick={handleSignIn}
+          type="submit"
         >
           Log In
         </Button>

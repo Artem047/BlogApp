@@ -3,6 +3,7 @@ import {
   createUserWithEmailAndPassword,
   onAuthStateChanged,
   signInWithEmailAndPassword,
+  signInWithPopup,
   signOut,
 } from "firebase/auth";
 import React, {
@@ -12,13 +13,15 @@ import React, {
   useEffect,
   useState,
 } from "react";
-import { auth } from "../utils/firebase";
+import { auth, provider } from "../utils/firebase";
+import { GoogleAuthProvider } from "firebase/auth/cordova";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 interface AuthContextType {
   signInpWithEmailAndPassword: (email: string, password: string) => void;
   signUpWithEmailAndPassword: (email: string, password: string) => void;
+  googleSignIn: () => void;
   logOut: () => void;
   user: User | null;
 }
@@ -37,10 +40,24 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       .catch((error) => console.error(error.message));
   };
 
+  const googleSignIn = () => {
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        const credential = GoogleAuthProvider.credentialFromResult(result);
+        const token = credential?.accessToken;
+        const user = result.user;
+        console.log(user);
+        console.log(token);
+      })
+      .catch((error) => {
+        console.error(error.message);
+      });
+  };
+
   const signUpWithEmailAndPassword = (email: string, password: string) => {
     createUserWithEmailAndPassword(auth, email, password)
       .then((data) => {
-        console.log(data);
+        console.error(data);
       })
       .catch((error) => alert(error.message));
   };
@@ -57,6 +74,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     signInpWithEmailAndPassword,
     signUpWithEmailAndPassword,
     logOut,
+    googleSignIn,
     user,
   };
 
@@ -65,7 +83,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setUser(currentUser);
       console.log("User", currentUser);
     });
-
     return () => {
       unsubscribe();
     };
