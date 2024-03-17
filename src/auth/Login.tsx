@@ -1,38 +1,23 @@
-import { Link, useNavigate } from "react-router-dom";
-import Button from "../components/button/Button";
-import Input from "../components/input/Input";
-import ImageComponent from "../components/imageComponent/ImageComponent";
-import { useAuth } from "../context/AuthContext";
-import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom"
+import Button from "../components/button/Button"
+import Input from "../components/input/Input"
+import ImageComponent from "../components/imageComponent/ImageComponent"
+import { useAuth } from "../context/AuthContext"
+import { FormEvent } from "react"
 
 const Login = () => {
-  const { signInpWithEmailAndPassword, googleSignIn, user } = useAuth();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const navigate = useNavigate();
+  const {handleSignIn, handleChange} = useAuth();
+  const navigate = useNavigate()
 
-  const handleSignIn = () => {
+  const signIn = (e: FormEvent<HTMLFormElement>) => {
     try {
-      signInpWithEmailAndPassword(email, password);
+      handleSignIn(e);
       navigate("/");
+
     } catch (error) {
-      console.error(error);
+      console.error(error)
     }
   }
-
-  const handleGoogleSignIn = async () => {
-    try {
-      await googleSignIn();
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  useEffect(() => {
-    if(user != null){
-      navigate("/");
-    }
-  }, [user])
 
   return (
     <div className="flex text-center flex-col gap-5 items-center w-[400px]">
@@ -51,19 +36,9 @@ const Login = () => {
         <p className="w-full">Or continue with</p>
         <hr color="#DBDBDB" className="w-full h-0.5" />
       </div>
-      <form className="w-full flex flex-col items-center gap-4" onSubmit={handleSignIn}>
-        <Input
-          name="email"
-          type="email"
-          placeholder="Email"
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <Input
-          name="password"
-          type="password"
-          placeholder="Password"
-          onChange={(e) => setPassword(e.target.value)}
-        />
+      <form className="w-full flex flex-col items-center gap-4" onSubmit={signIn}>
+        <Input name="email" type="email" placeholder="Email" onChange={handleChange} />
+        <Input name="password" type="password" placeholder="Password" onChange={handleChange} />
         <div className="flex gap-2">
           <p>don’t have an account?</p>
           <Link to="/auth/register" className="text-[#00BD97]">

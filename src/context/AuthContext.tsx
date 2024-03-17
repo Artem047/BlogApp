@@ -15,6 +15,7 @@ import React, {
 } from "react";
 import { auth, provider } from "../utils/firebase";
 import { GoogleAuthProvider } from "firebase/auth/cordova";
+import { supabase } from "../utils/supabase";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -29,64 +30,65 @@ interface AuthContextType {
 interface AuthProviderProps {
   children: ReactNode;
 }
+interface AuthContextType {
+  handleSignUp: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
+  handleSignIn: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
+  handleSignOut: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
+  handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}
+
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [formData, setFormData] = useState({
+    fullname: "",
+    email: "",
+    password: "",
+  });
 
-  const signInpWithEmailAndPassword = (email: string, password: string) => {
-    signInWithEmailAndPassword(auth, email, password)
-      .then((data) => {
-        console.log(data);
-      })
-      .catch((error) => console.error(error.message));
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
   };
-
-  const googleSignIn = () => {
-    signInWithPopup(auth, provider)
-      .then((result) => {
-        const credential = GoogleAuthProvider.credentialFromResult(result);
-        const token = credential?.accessToken;
-        const user = result.user;
-        console.log(user);
-        console.log(token);
-      })
-      .catch((error) => {
-        console.error(error.message);
+  const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      const { data ,error } = await supabase.auth.signUp({
+        email: formData.email,
+        password: formData.password,
+        options: {
+          data: {
+            fullname: formData.fullname,
+          },
+        },
       });
   };
 
-  const signUpWithEmailAndPassword = (email: string, password: string) => {
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((data) => {
-        console.error(data);
-      })
-      .catch((error) => alert(error.message));
+  const handleSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      const { data ,error } = await supabase.auth.signInWithPassword({
+        email: formData.email,
+        password: formData.password,
+      });
+      if (error) throw error;
+      console.log(data);
+    } catch (error) {
+      alert(error);
+    }
   };
 
-  const logOut = () => {
-    signOut(auth)
-      .then(() => {
-        setUser(null);
-      })
-      .catch((error) => console.error(error.message));
-  };
+  const handleSignOut = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
-  const contextValue: AuthContextType = {
-    signInpWithEmailAndPassword,
-    signUpWithEmailAndPassword,
-    logOut,
-    googleSignIn,
-    user,
-  };
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-      console.log("User", currentUser);
-    });
-    return () => {
-      unsubscribe();
-    };
-  }, []);
+  const contextValue: AuthContextType = { handleSignUp, handleChange, handleSignIn, handleSignOut };
 
   return (
     <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>

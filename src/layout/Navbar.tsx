@@ -3,28 +3,33 @@ import {
   AiOutlineHome,
   AiOutlinePlusCircle,
   AiOutlineUser,
-  AiOutlineHeart
+  AiOutlineHeart,
 } from "react-icons/ai";
 import Button from "../components/button/Button";
 import ImageComponent from "../components/imageComponent/ImageComponent";
 import { useAuth } from "../context/AuthContext";
+import { FormEvent } from "react";
 
 const Navbar = () => {
-  const { user, logOut } = useAuth();
-  const navigate = useNavigate()
+  const { handleSignOut } = useAuth();
+  const navigate = useNavigate();
 
-  const handleLogOut = async () => {
+  const signOut = (e: FormEvent<HTMLFormElement>) => {
     try {
-      await logOut();
-      navigate('/auth/register');
+      handleSignOut(e);
+      navigate("/auth/register");
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
   return (
     <nav className="bg-[#00BD97] flex flex-col justify-between items-center rounded-t-xl text-lg w-[245px] text-center pt-5">
-      <ImageComponent src="/people.png" alt="Image user" className="w-20 h-20 rounded-full border-4 border-white" />
-      <p className="text-white text-xl py-5">{user?.displayName === null ? 'Users' : user?.displayName}</p>
+      <ImageComponent
+        src="/people.png"
+        alt="Image user"
+        className="w-20 h-20 rounded-full border-4 border-white"
+      />
+      <p className="text-white text-xl py-5">{}</p>
       <div className="flex flex-col mt-7 gap-10">
         <NavLink to="/" className="nav_link">
           <AiOutlineHome size={35} />
@@ -43,13 +48,11 @@ const Navbar = () => {
           Profile
         </NavLink>
       </div>
-      <Button
-        className="uppercase bg-[#00D2A8] w-full py-4 text-white font-bold mt-20"
-        type="button"
-        onClick={handleLogOut}
-      >
-        logout
-      </Button>
+      <form className=" bg-[#00D2A8] w-full py-4 text-white font-bold mt-20" onSubmit={signOut}>
+        <Button type="submit" className="uppercase">
+          logout
+        </Button>
+      </form>
     </nav>
   );
 };

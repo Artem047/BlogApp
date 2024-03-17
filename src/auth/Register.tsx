@@ -7,22 +7,7 @@ import { useState } from "react";
 
 
 const Register = () => {
-  const { signUpWithEmailAndPassword } = useAuth();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const navigate = useNavigate();
-
-  const handleSignUp = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    try {
-      signUpWithEmailAndPassword(email, password)
-      navigate('/')
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-
+  const { handleSignUp, handleChange } = useAuth();
   return (
     <div className="flex text-center flex-col gap-5 items-center w-[400px]">
       <h1 className="font-bold text-4xl">Create Your Accout</h1>
@@ -39,22 +24,10 @@ const Register = () => {
         <p className="w-full">Or continue with</p>
         <hr color="#DBDBDB" className="w-full h-0.5" />
       </div>
-      <form
-        className="w-full flex flex-col items-center gap-4"
-        onSubmit={handleSignUp}
-      >
-        <Input
-          name="email"
-          type="email"
-          placeholder="Email"
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <Input
-          name="password"
-          type="password"
-          placeholder="Password"
-          onChange={(e) => setPassword(e.target.value)}
-        />
+      <form className="w-full flex flex-col items-center gap-4" onSubmit={handleSignUp}>
+        <Input name="fullname" type="fullname" placeholder="Fullname" onChange={handleChange} />
+        <Input name="email" type="email" placeholder="Email" onChange={handleChange} />
+        <Input name="password" type="password" placeholder="Password" onChange={handleChange} />
         <div className="flex gap-2">
           <p>have an account?</p>
           <Link to="/auth/login" className="text-[#00BD97]">
