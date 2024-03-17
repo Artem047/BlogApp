@@ -5,7 +5,7 @@ import ImageComponent from "../components/imageComponent/ImageComponent";
 import { useAuth } from "../context/AuthContext";
 
 const Register = () => {
-  const { handleSubmit, handleChange } = useAuth();
+  const { handleSignUp, handleChange } = useAuth();
   return (
     <div className="flex text-center flex-col gap-5 items-center w-[400px]">
       <h1 className="font-bold text-4xl">Create Your Accout</h1>
@@ -22,7 +22,7 @@ const Register = () => {
         <p className="w-full">Or continue with</p>
         <hr color="#DBDBDB" className="w-full h-0.5" />
       </div>
-      <form className="w-full flex flex-col items-center gap-4" onSubmit={handleSubmit}>
+      <form className="w-full flex flex-col items-center gap-4" onSubmit={handleSignUp}>
         <Input name="fullname" type="fullname" placeholder="Fullname" onChange={handleChange} />
         <Input name="email" type="email" placeholder="Email" onChange={handleChange} />
         <Input name="password" type="password" placeholder="Password" onChange={handleChange} />

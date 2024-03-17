@@ -1,9 +1,24 @@
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import Button from "../components/button/Button"
 import Input from "../components/input/Input"
 import ImageComponent from "../components/imageComponent/ImageComponent"
+import { useAuth } from "../context/AuthContext"
+import { FormEvent } from "react"
 
 const Login = () => {
+  const {handleSignIn, handleChange} = useAuth();
+  const navigate = useNavigate()
+
+  const signIn = (e: FormEvent<HTMLFormElement>) => {
+    try {
+      handleSignIn(e);
+      navigate("/");
+
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
   return (
     <div className="flex text-center flex-col gap-5 items-center w-[400px]">
       <h1 className="font-bold text-4xl">Welcome Back</h1>
@@ -20,9 +35,9 @@ const Login = () => {
         <p className="w-full">Or continue with</p>
         <hr color="#DBDBDB" className="w-full h-0.5" />
       </div>
-      <form className="w-full flex flex-col items-center gap-4">
-        <Input name="email" type="email" placeholder="Email" />
-        <Input name="password" type="password" placeholder="Password" />
+      <form className="w-full flex flex-col items-center gap-4" onSubmit={signIn}>
+        <Input name="email" type="email" placeholder="Email" onChange={handleChange} />
+        <Input name="password" type="password" placeholder="Password" onChange={handleChange} />
         <div className="flex gap-2">
           <p>don’t have an account?</p>
           <Link to="/auth/register" className="text-[#00BD97]">

@@ -12,7 +12,9 @@ interface AuthProviderProps {
   children: ReactNode;
 }
 interface AuthContextType {
-  handleSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
+  handleSignUp: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
+  handleSignIn: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
+  handleSignOut: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
@@ -22,13 +24,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     email: "",
     password: "",
   });
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
   };
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       const { data ,error } = await supabase.auth.signUp({
@@ -47,7 +50,32 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       alert(error);
     }
   };
-  const contextValue: AuthContextType = { handleSubmit, handleChange };
+
+  const handleSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      const { data ,error } = await supabase.auth.signInWithPassword({
+        email: formData.email,
+        password: formData.password,
+      });
+      if (error) throw error;
+      console.log(data);
+    } catch (error) {
+      alert(error);
+    }
+  };
+
+  const handleSignOut = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  const contextValue: AuthContextType = { handleSignUp, handleChange, handleSignIn, handleSignOut };
 
   return (
     <AuthContext.Provider value={contextValue}>
