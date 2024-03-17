@@ -1,4 +1,4 @@
-import React, { ReactNode, createContext, useContext, useState } from "react";
+import React, { ReactNode, createContext, useContext, useEffect, useState } from "react";
 import { supabase } from "../utils/supabase";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -11,6 +11,7 @@ interface AuthContextType {
   handleSignIn: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
   handleSignOut: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  userDisplayName: string | null;
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
@@ -19,6 +20,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     email: "",
     password: "",
   });
+  const [userDisplayName, setUserDisplayName] = useState<string | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -49,12 +51,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const handleSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const { data ,error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email: formData.email,
         password: formData.password,
       });
       if (error) throw error;
-      console.log(data);
+      if (data) {
+        console.log(data);
+        const displayName = data.user.user_metadata.fullname;
+        setUserDisplayName(displayName); // Установим userDisplayName после успешного входа
+      }
     } catch (error) {
       alert(error);
     }
@@ -70,7 +76,21 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   }
 
-  const contextValue: AuthContextType = { handleSignUp, handleChange, handleSignIn, handleSignOut };
+  const contextValue: AuthContextType = { handleSignUp, handleChange, handleSignIn, handleSignOut, userDisplayName };
+
+  useEffect(() => {
+    const { data } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN' && session?.user) {
+        setUserDisplayName(session.user.user_metadata.fullname);
+      } else {
+        setUserDisplayName(null);
+      }
+    });
+
+    return () => {
+      data.subscription.unsubscribe();
+    };
+  }, []);
 
   return (
     <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>

@@ -11,7 +11,7 @@ import { useAuth } from "../context/AuthContext";
 import { FormEvent } from "react";
 
 const Navbar = () => {
-  const { handleSignOut } = useAuth();
+  const { handleSignOut, userDisplayName } = useAuth();
   const navigate = useNavigate();
 
   const signOut = (e: FormEvent<HTMLFormElement>) => {
@@ -29,7 +29,7 @@ const Navbar = () => {
         alt="Image user"
         className="w-20 h-20 rounded-full border-4 border-white"
       />
-      <p className="text-white text-xl py-5">{}</p>
+      <p className="text-white text-xl py-5">{userDisplayName}</p>
       <div className="flex flex-col mt-7 gap-10">
         <NavLink to="/" className="nav_link">
           <AiOutlineHome size={35} />
