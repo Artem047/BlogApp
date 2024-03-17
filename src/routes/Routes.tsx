@@ -7,17 +7,11 @@ import Home from "../pages/Home";
 import Collection from "../pages/Collection";
 import CreatePost from "../pages/CreatePost";
 import Profile from "../pages/Profile";
-import Protected from "../components/Protected";
-// import Protected from "../components/Protected";
 
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: (
-      <Protected>
-        <Root />
-      </Protected>
-    ),
+    element: <Root />,
     children: [
       {
         path: "/",

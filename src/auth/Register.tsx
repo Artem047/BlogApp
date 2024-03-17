@@ -1,9 +1,8 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Input from "../components/input/Input";
 import Button from "../components/button/Button";
 import ImageComponent from "../components/imageComponent/ImageComponent";
 import { useAuth } from "../context/AuthContext";
-import { useState } from "react";
 
 
 const Register = () => {

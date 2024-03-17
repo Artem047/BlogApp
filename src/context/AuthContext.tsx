@@ -1,31 +1,7 @@
-import {
-  User,
-  createUserWithEmailAndPassword,
-  onAuthStateChanged,
-  signInWithEmailAndPassword,
-  signInWithPopup,
-  signOut,
-} from "firebase/auth";
-import React, {
-  ReactNode,
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
-import { auth, provider } from "../utils/firebase";
-import { GoogleAuthProvider } from "firebase/auth/cordova";
+import React, { ReactNode, createContext, useContext, useState } from "react";
 import { supabase } from "../utils/supabase";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
-interface AuthContextType {
-  signInpWithEmailAndPassword: (email: string, password: string) => void;
-  signUpWithEmailAndPassword: (email: string, password: string) => void;
-  googleSignIn: () => void;
-  logOut: () => void;
-  user: User | null;
-}
 
 interface AuthProviderProps {
   children: ReactNode;
@@ -50,10 +26,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       [e.target.name]: e.target.value,
     });
   };
+
   const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const { data ,error } = await supabase.auth.signUp({
+      const { error } = await supabase.auth.signUp({
         email: formData.email,
         password: formData.password,
         options: {
@@ -62,6 +39,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           },
         },
       });
+      if (error) throw error
+      alert('Check your email for verification link')
+    } catch(e) {
+      console.error(e);
+    }
   };
 
   const handleSignIn = async (e: React.FormEvent<HTMLFormElement>) => {

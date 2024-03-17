@@ -26,7 +26,6 @@ const Login = () => {
       <Button
         className="w-[126px] h-12 bg-[#FFFFFF] rounded-md flex justify-center items-center gap-2 border border-[#00BD97]"
         type="button"
-        onClick={handleGoogleSignIn}
       >
         <ImageComponent src="/google.svg" alt="Icon google" />
         <p className="text-base">Google</p>
