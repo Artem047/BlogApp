@@ -59,7 +59,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       if (data) {
         console.log(data);
         const displayName = data.user.user_metadata.fullname;
-        setUserDisplayName(displayName); // Установим userDisplayName после успешного входа
+        setUserDisplayName(displayName);
       }
     } catch (error) {
       alert(error);

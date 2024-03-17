@@ -11,7 +11,9 @@ import Profile from "../pages/Profile";
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <Root />,
+    element: (
+        <Root />
+    ),
     children: [
       {
         path: "/",
