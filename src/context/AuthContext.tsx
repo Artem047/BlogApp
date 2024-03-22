@@ -83,6 +83,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const { data } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'INITIAL_SESSION' && session?.user) {
         setUserDisplayName(session.user.user_metadata.fullname);
+      }else if(event === 'SIGNED_IN' && session?.user){
+        setUserDisplayName(session.user.user_metadata.fullname);
       } else {
         setUserDisplayName(null);
       }
@@ -91,6 +93,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     return () => {
       data.subscription.unsubscribe();
     };
+
   }, []);
 
   return (
