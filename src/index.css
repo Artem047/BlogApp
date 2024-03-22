@@ -11,6 +11,7 @@ body{
   max-width: 1440px;
   width: 100%;
   background-color: #F2F2F2;
+  margin: 0 auto;
 }
 .nav_link{
   width: 220px;

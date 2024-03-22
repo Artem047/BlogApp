@@ -32,7 +32,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const { error } = await supabase.auth.signUp({
+      const { error } = await supabase
+        .auth.signUp({
         email: formData.email,
         password: formData.password,
         options: {
@@ -80,7 +81,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   useEffect(() => {
     const { data } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_IN' && session?.user) {
+      if (event === 'INITIAL_SESSION' && session?.user) {
         setUserDisplayName(session.user.user_metadata.fullname);
       } else {
         setUserDisplayName(null);
