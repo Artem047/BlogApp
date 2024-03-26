@@ -5,7 +5,6 @@ import Login from "../auth/Login";
 import Register from "../auth/Register";
 import Home from "../pages/Home";
 import Collection from "../pages/Collection";
-import CreatePost from "../pages/CreatePost";
 import Profile from "../pages/Profile";
 
 export const router = createBrowserRouter([
@@ -22,10 +21,6 @@ export const router = createBrowserRouter([
       {
         path: "/collection",
         element: <Collection />,
-      },
-      {
-        path: "/createpost",
-        element: <CreatePost />,
       },
       {
         path: "/profile",

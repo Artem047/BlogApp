@@ -12,7 +12,7 @@ const Login = () => {
   const signIn = (e: FormEvent<HTMLFormElement>) => {
     try {
       handleSignIn(e);
-      navigate("/");
+      navigate("/home");
 
     } catch (error) {
       console.error(error)

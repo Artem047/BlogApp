@@ -14,14 +14,13 @@ body{
   margin: 0 auto;
 }
 .nav_link{
-  width: 220px;
+  /* width: 220px; */
   color: white;
   display: flex;
   align-items: center;
   gap: 24px;
   padding: 14px 28px;
   border-radius: 6px;
-
 }
 a.active{
   color: #00BD97;
