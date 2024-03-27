@@ -3,21 +3,22 @@ import Button from "../components/button/Button"
 import Input from "../components/input/Input"
 import ImageComponent from "../components/imageComponent/ImageComponent"
 import { useAuth } from "../context/AuthContext"
-import { FormEvent } from "react"
+import { FormEvent, useEffect } from "react"
 
 const Login = () => {
-  const {handleSignIn, handleChange} = useAuth();
-  const navigate = useNavigate()
+  const {handleSignIn, handleChange, fullName} = useAuth();
+  const navigate = useNavigate();
 
-  const signIn = (e: FormEvent<HTMLFormElement>) => {
-    try {
-      handleSignIn(e);
-      navigate("/");
 
-    } catch (error) {
-      console.error(error)
-    }
+  const signIn = async (e: FormEvent<HTMLFormElement>) => {
+    handleSignIn(e)
   }
+
+  useEffect(() => {
+    if (fullName != null) {
+      navigate('/');
+    }
+  }, [fullName, navigate]);
 
   return (
     <div className="flex text-center flex-col gap-5 items-center w-[400px]">

@@ -5,7 +5,8 @@ import ImageComponent from "../components/imageComponent/ImageComponent";
 import { useAuth } from "../context/AuthContext";
 
 const Register = () => {
-  const { handleSignUp, handleChange } = useAuth();
+  // const { handleSignUp, handleChange } = useAuth();
+  const {handleSignUp, handleChange} = useAuth();
   return (
     <div className="flex text-center flex-col gap-5 items-center w-[400px]">
       <h1 className="font-bold text-4xl">Create Your Accout</h1>

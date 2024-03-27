@@ -3,7 +3,6 @@ import Header from "../layout/Header";
 import Navbar from "../layout/Navbar";
 
 const Root = () => {
-
   return  (
     <div>
       <Header />
