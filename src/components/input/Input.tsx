@@ -1,7 +1,8 @@
 import { IInput } from "../../interface/input.interface";
 
-const Input = ({ placeholder, type, name, onChange }: IInput) => {
-  return <input onChange={onChange} required name={name} type={type} placeholder={placeholder} className="w-full h-16 placeholder:text-lg rounded-xl outline-none text-lg px-6" />;
+const Input = ({ placeholder, type, name, onChange, readonly, value, className }: IInput) => {
+  return <input onChange={onChange} required name={name} type={type} placeholder={placeholder} className={className} readOnly={readonly} defaultValue={value} />;
 };
 
 export default Input;
+

@@ -12,7 +12,7 @@ const Login = () => {
   const signIn = (e: FormEvent<HTMLFormElement>) => {
     try {
       handleSignIn(e);
-      navigate("/home");
+      navigate("/");
 
     } catch (error) {
       console.error(error)
@@ -36,8 +36,8 @@ const Login = () => {
         <hr color="#DBDBDB" className="w-full h-0.5" />
       </div>
       <form className="w-full flex flex-col items-center gap-4" onSubmit={signIn}>
-        <Input name="email" type="email" placeholder="Email" onChange={handleChange} />
-        <Input name="password" type="password" placeholder="Password" onChange={handleChange} />
+        <Input name="email" type="email" placeholder="Email" onChange={handleChange} className="w-full h-16 placeholder:text-lg rounded-xl outline-none text-lg px-6" />
+        <Input name="password" type="password" placeholder="Password" onChange={handleChange} className="w-full h-16 placeholder:text-lg rounded-xl outline-none text-lg px-6" />
         <div className="flex gap-2">
           <p>don’t have an account?</p>
           <Link to="/auth/register" className="text-[#00BD97]">

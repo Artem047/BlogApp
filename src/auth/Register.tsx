@@ -31,18 +31,21 @@ const Register = () => {
           type="fullname"
           placeholder="Fullname"
           onChange={handleChange}
+          className="w-full h-16 placeholder:text-lg rounded-xl outline-none text-lg px-6"
         />
         <Input
           name="email"
           type="email"
           placeholder="Email"
           onChange={handleChange}
+          className="w-full h-16 placeholder:text-lg rounded-xl outline-none text-lg px-6"
         />
         <Input
           name="password"
           type="password"
           placeholder="Password"
           onChange={handleChange}
+          className="w-full h-16 placeholder:text-lg rounded-xl outline-none text-lg px-6"
         />
         <div className="flex gap-2">
           <p>have an account?</p>

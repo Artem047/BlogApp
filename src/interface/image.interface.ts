@@ -1,5 +1,5 @@
 export interface IImageComponent {
-    src: string;
-    alt: string;
+    src?: string | undefined;
+    alt?: string;
     className?: string;
 }

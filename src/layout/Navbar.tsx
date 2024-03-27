@@ -49,13 +49,13 @@ const Navbar = () => {
       </div>
       {show === false ? (
         <>
-          <div className="px-5">
+          <div className="px-5 flex flex-col items-center">
             <ImageComponent
-              src="/people.png"
+              src="/avatar.png"
               alt="Image user"
-              className="w-20 h-20 rounded-full border-4 border-white"
+              className="w-16 h-16 rounded-full border-4 border-white"
             />
-            <p className="text-white text-xl py-5">{userDisplayName}</p>
+            <p className="text-white text-xl py-5"></p>
             <div className="flex flex-col mt-7 gap-10">
               <NavLink to="/" className=" text-white rounded-md px-6 py-2">
                 <AiOutlineHome size={35} />
@@ -87,7 +87,7 @@ const Navbar = () => {
         <>
           <div className="px-5 flex flex-col justify-center items-center">
             <ImageComponent
-              src="/people.png"
+              src="/avatar.png"
               alt="Image user"
               className="w-20 h-20 rounded-full border-4 border-white"
             />
