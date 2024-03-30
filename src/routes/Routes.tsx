@@ -6,20 +6,17 @@ import Register from "../auth/Register";
 import Home from "../pages/Home";
 import Collection from "../pages/Collection";
 import Profile from "../pages/Profile";
-import Protected from "../components/Protected";
 
 export const router = createBrowserRouter([
   {
     path: "/",
     element: (
-      <Protected>
         <Root />
-      </Protected>
     ),
     children: [
       {
         path: "/",
-        element: <Home />,
+        element:<Home />,
       },
       {
         path: "/collection",

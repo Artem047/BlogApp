@@ -5,18 +5,18 @@ import ImageComponent from "../components/imageComponent/ImageComponent";
 import { useAuth } from "../context/AuthContext";
 
 const Register = () => {
-  // const { handleSignUp, handleChange } = useAuth();
   const {handleSignUp, handleChange} = useAuth();
+
   return (
     <div className="flex text-center flex-col gap-5 items-center w-[400px]">
       <h1 className="font-bold text-4xl">Create Your Accout</h1>
       <p className="text-lg">Sign up into your account</p>
       <Button
-        className="w-[126px] h-12 bg-[#FFFFFF] rounded-md flex justify-center items-center gap-2 border border-[#00BD97]"
+        className="w-[126px] h-12 bg-[#FFFFFF] rounded-md flex justify-center items-center gap-2 border border-[#DEDEDE] cursor-pointer"
         type="button"
       >
-        <ImageComponent src="/google.svg" alt="Icon google" />
-        <p className="text-base">Google</p>
+        <ImageComponent src="/github.png" alt="Icon google" className="w-8 h-8" />
+        <p className="text-base">GitHub</p>
       </Button>
       <div className="flex items-center w-full">
         <hr color="#DBDBDB" className="w-full h-0.5" />

@@ -6,6 +6,7 @@ import React, {
   useState,
 } from "react";
 import { supabase } from "../utils/supabase";
+import { User } from "@supabase/supabase-js";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -16,16 +17,20 @@ interface AuthContextType {
   handleSignOut: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
   handleSignUp: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
   handleSignIn: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
+  signInWithGithub: () => Promise<void>;
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   email: string | null;
   fullName: string | null;
   password: string | null;
+  user: User | null;
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
+  const [user, setUser] = useState<User | null>(null);
   const [fullName, setFullName] = useState<string | null>('');
-  const [email, setEmail] = useState<string>('');
+  const [email, setEmail] = useState<string | null>(null);
   const [password, setPassword] = useState<string>('');
+  
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -48,8 +53,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     e.preventDefault();
     try {
       const { error } = await supabase.auth.signUp({
-        email: email,
-        password: password,
+        email: email!,
+        password: password!,
         options: {
           data: {
             fullname: fullName,
@@ -61,15 +66,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     } catch (e) {
       console.error(e);
     }
-    
   };
 
-  const handleSignIn = async (e: React.FormEvent<HTMLFormElement> ) => {
+  const handleSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       const { error } = await supabase.auth.signInWithPassword({
-        email: email,
-        password: password,
+        email: email!,
+        password: password!,
       });
       if (error) throw error;
     } catch (error) {
@@ -81,17 +85,49 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     e.preventDefault();
     try {
       const { error } = await supabase.auth.signOut();
+      setUser(null);
       if (error) throw error;
     } catch (error) {
       console.error(error);
     }
   };
 
-  const getInfo = async () => {
-    const { user } = (await supabase.auth.getUser()).data;
-    setEmail(user?.user_metadata.email);
-    setFullName(user?.user_metadata.fullname);
-    console.log(user);
+  const signInWithGithub = async () => {
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'github',
+      })
+      if (error) throw error;
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  useEffect(() => {
+    const { data } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "SIGNED_IN") {
+        getUser(session?.user);
+        console.log(session?.user)
+      } else if (event === "SIGNED_OUT") {
+        setUser(null);
+      }
+    });
+
+    return () => {
+      data?.subscription.unsubscribe();
+    };
+  }, []);
+
+  const getUser = async (user: User | null | undefined) => {
+    if (user) {
+      setUser(user);
+      setEmail(user.user_metadata.email);
+      setFullName(user.user_metadata.fullname);
+    } else {
+      setUser(null);
+      setEmail(null);
+      setFullName(null);
+    }
   };
 
   const contextValue: AuthContextType = {
@@ -99,27 +135,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     email,
     password,
     fullName,
+    user,
     handleSignUp,
     handleSignIn,
     handleChange,
+    signInWithGithub
   };
-
-  useEffect(() => {
-    const { data } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === "INITIAL_SESSION" && session?.user) {
-        setFullName(session.user.user_metadata.fullname);
-      } else if (event === "SIGNED_IN" && session?.user) {
-        setFullName(session.user.user_metadata.fullname);
-      } else {
-        setFullName(null);
-      }
-    });
-
-    getInfo();
-    return () => {
-      data.subscription.unsubscribe();
-    };
-  }, []);
 
   return (
     <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>

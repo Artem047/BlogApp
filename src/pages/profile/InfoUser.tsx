@@ -2,7 +2,7 @@ import Input from "../../components/input/Input";
 import { useAuth } from "../../context/AuthContext";
 
 const InfoUser = () => {
-  const {fullName, email } = useAuth();
+  const {fullName, email, user } = useAuth();
 
   return (
     <div className="bg-white p-10 flex flex-wrap gap-7">
@@ -10,7 +10,7 @@ const InfoUser = () => {
         <label>User Name</label>
         <Input
           type="text"
-          value={fullName || ""}
+          value={`@${user?.user_metadata.user_name === undefined ? 'Anonymous' : user?.user_metadata.user_name}`}
           className="bg-[#F7F7F7] border border-[#E1E1E1] h-12 rounded-xl outline-none text-sm px-6 w-[400px]"
           readonly
         />
@@ -19,11 +19,21 @@ const InfoUser = () => {
         <label>Email</label>
         <Input
           type="text"
-          value={email || ""}
+          value={email || user?.user_metadata.email}
           className="bg-[#F7F7F7] border border-[#E1E1E1] h-12 rounded-xl outline-none text-sm px-6 w-[400px] caret-transparent"
           readonly
         />
       </div>
+      <div className="flex flex-col gap-2">
+        <label>Name</label>
+        <Input
+          type="text"
+          value={user?.user_metadata.name || fullName}
+          className="bg-[#F7F7F7] border border-[#E1E1E1] h-12 rounded-xl outline-none text-sm px-6 w-[400px] caret-transparent"
+          readonly
+        />
+      </div>
+      
     </div>
   );
 };

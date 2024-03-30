@@ -1,44 +1,59 @@
-import { Link, useNavigate } from "react-router-dom"
-import Button from "../components/button/Button"
-import Input from "../components/input/Input"
-import ImageComponent from "../components/imageComponent/ImageComponent"
-import { useAuth } from "../context/AuthContext"
-import { FormEvent, useEffect } from "react"
+import { Link, useNavigate } from "react-router-dom";
+import Button from "../components/button/Button";
+import Input from "../components/input/Input";
+import ImageComponent from "../components/imageComponent/ImageComponent";
+import { useAuth } from "../context/AuthContext";
+import { useEffect } from "react";
 
 const Login = () => {
-  const {handleSignIn, handleChange, fullName} = useAuth();
+  const { handleSignIn, handleChange, signInWithGithub, user, email } = useAuth();
   const navigate = useNavigate();
 
-
-  const signIn = async (e: FormEvent<HTMLFormElement>) => {
-    handleSignIn(e)
-  }
-
   useEffect(() => {
-    if (fullName != null) {
-      navigate('/');
+    if (user !== null && email !== null) {
+      navigate("/");
     }
-  }, [fullName, navigate]);
+  }, [user, email, navigate]);
 
   return (
     <div className="flex text-center flex-col gap-5 items-center w-[400px]">
       <h1 className="font-bold text-4xl">Welcome Back</h1>
       <p className="text-lg">Login into your account</p>
       <Button
-        className="w-[126px] h-12 bg-[#FFFFFF] rounded-md flex justify-center items-center gap-2 border border-[#00BD97]"
+        className="w-[126px] h-12 bg-[#FFFFFF] rounded-md flex justify-center items-center gap-2 border border-[#DEDEDE] cursor-pointer"
         type="button"
+        onClick={signInWithGithub}
       >
-        <ImageComponent src="/google.svg" alt="Icon google" />
-        <p className="text-base">Google</p>
+        <ImageComponent
+          src="/github.png"
+          alt="Icon google"
+          className="w-8 h-8"
+        />
+        <p className="text-base">GitHub</p>
       </Button>
       <div className="flex items-center w-full">
         <hr color="#DBDBDB" className="w-full h-0.5" />
         <p className="w-full">Or continue with</p>
         <hr color="#DBDBDB" className="w-full h-0.5" />
       </div>
-      <form className="w-full flex flex-col items-center gap-4" onSubmit={signIn}>
-        <Input name="email" type="email" placeholder="Email" onChange={handleChange} className="w-full h-16 placeholder:text-lg rounded-xl outline-none text-lg px-6" />
-        <Input name="password" type="password" placeholder="Password" onChange={handleChange} className="w-full h-16 placeholder:text-lg rounded-xl outline-none text-lg px-6" />
+      <form
+        className="w-full flex flex-col items-center gap-4"
+        onSubmit={handleSignIn}
+      >
+        <Input
+          name="email"
+          type="email"
+          placeholder="Email"
+          onChange={handleChange}
+          className="w-full h-16 placeholder:text-lg rounded-xl outline-none text-lg px-6"
+        />
+        <Input
+          name="password"
+          type="password"
+          placeholder="Password"
+          onChange={handleChange}
+          className="w-full h-16 placeholder:text-lg rounded-xl outline-none text-lg px-6"
+        />
         <div className="flex gap-2">
           <p>don’t have an account?</p>
           <Link to="/auth/register" className="text-[#00BD97]">
