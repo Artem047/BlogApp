@@ -30,7 +30,7 @@ const Register = () => {
         <Input
           name="fullname"
           type="fullname"
-          placeholder="Fullname"
+          placeholder="@fullname"
           onChange={handleChange}
           className="w-full h-16 placeholder:text-lg rounded-xl outline-none text-lg px-6"
         />
