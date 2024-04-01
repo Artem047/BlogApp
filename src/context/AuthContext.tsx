@@ -69,7 +69,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const handleNewSignUp = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      await createUserWithEmailAndPassword(auth, email, password)
+      await createUserWithEmailAndPassword(auth, email, password);
     } catch (e) {
       alert(e);
     }
@@ -93,34 +93,41 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     } catch (e) {
       alert(e);
     }
-  }
+  };
 
   const signInWithGithub = async () => {
     try {
-      await signInWithPopup(auth, GitHubProvider).then((data) => console.log(data));
+      await signInWithPopup(auth, GitHubProvider).then((data) =>
+        console.log(data)
+      );
     } catch (e) {
       console.error(e);
     }
-  }
+  };
 
   const signInWithGoogle = async () => {
     try {
-      await signInWithPopup(auth, GoogleProvider).then((data) => console.log(data));
+      await signInWithPopup(auth, GoogleProvider).then((data) =>
+        console.log(data)
+      );
     } catch (e) {
       console.error(e);
     }
-  }
+  };
 
   const handleUpdateProfile = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      await updateProfile(auth.currentUser, {
-        displayName: displayName,
-      })
+      const currentUser = auth.currentUser;
+      if (currentUser !== null) {
+        await updateProfile(currentUser, {
+          displayName: displayName,
+        });
+      }
     } catch (e) {
       alert(e);
     }
-  }
+  };
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -129,8 +136,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     });
     return unsubscribe();
   }, []);
-
-  
 
   // const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
   //   const { name, value } = e.target;
@@ -247,7 +252,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     handleNewSignOut,
     signInWithGithub,
     handleUpdateProfile,
-    signInWithGoogle
+    signInWithGoogle,
   };
 
   return (
