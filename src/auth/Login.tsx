@@ -6,7 +6,7 @@ import { useAuth } from "../context/AuthContext";
 import { useEffect } from "react";
 
 const Login = () => {
-  const { handleNewSignIn, handleNewChange, signInWithGithub, user, signInWithGoogle } = useAuth();
+  const { handleNewSignIn, handleNewChange, user, signInWithGoogle } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
