@@ -6,14 +6,14 @@ import { useAuth } from "../context/AuthContext";
 import { useEffect } from "react";
 
 const Login = () => {
-  const { handleSignIn, handleChange, signInWithGithub, user, email } = useAuth();
+  const { handleNewSignIn, handleNewChange, signInWithGithub, user, signInWithGoogle } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (user !== null && email !== null) {
+    if (user != null) {
       navigate("/");
     }
-  }, [user, email, navigate]);
+  }, [user, navigate]);
 
   return (
     <div className="flex text-center flex-col gap-5 items-center w-[400px]">
@@ -22,7 +22,7 @@ const Login = () => {
       <Button
         className="w-[126px] h-12 bg-[#FFFFFF] rounded-md flex justify-center items-center gap-2 border border-[#DEDEDE] cursor-pointer"
         type="button"
-        onClick={signInWithGithub}
+        onClick={signInWithGoogle}
       >
         <ImageComponent
           src="/github.png"
@@ -38,20 +38,20 @@ const Login = () => {
       </div>
       <form
         className="w-full flex flex-col items-center gap-4"
-        onSubmit={handleSignIn}
+        onSubmit={handleNewSignIn}
       >
         <Input
           name="email"
           type="email"
           placeholder="Email"
-          onChange={handleChange}
+          onChange={handleNewChange}
           className="w-full h-16 placeholder:text-lg rounded-xl outline-none text-lg px-6"
         />
         <Input
           name="password"
           type="password"
           placeholder="Password"
-          onChange={handleChange}
+          onChange={handleNewChange}
           className="w-full h-16 placeholder:text-lg rounded-xl outline-none text-lg px-6"
         />
         <div className="flex gap-2">

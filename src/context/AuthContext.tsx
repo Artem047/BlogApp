@@ -1,12 +1,23 @@
 import React, {
+  FormEvent,
   ReactNode,
   createContext,
   useContext,
   useEffect,
   useState,
 } from "react";
-import { supabase } from "../utils/supabase";
-import { User } from "@supabase/supabase-js";
+// import { supabase } from "../utils/supabase";
+// import { User } from "@supabase/supabase-js";
+import {
+  createUserWithEmailAndPassword,
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  signOut,
+  updateProfile,
+  User,
+} from "firebase/auth";
+import { auth, GitHubProvider, GoogleProvider } from "../utils/firebase";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -14,29 +25,35 @@ interface AuthProviderProps {
   children: ReactNode;
 }
 interface AuthContextType {
-  handleSignOut: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
-  handleSignUp: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
-  handleSignIn: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
-  signInWithGithub: () => Promise<void>;
-  handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  // handleSignOut: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
+  // handleSignUp: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
+  // handleSignIn: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
+  // signInWithGithub: () => Promise<void>;
+  // handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   email: string | null;
-  fullName: string | null;
+  displayName: string | null;
   password: string | null;
   user: User | null;
+  handleNewSignUp: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
+  handleNewSignIn: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
+  handleNewChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleNewSignOut: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
+  signInWithGithub: () => Promise<void>;
+  signInWithGoogle: () => Promise<void>;
+  handleUpdateProfile: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [fullName, setFullName] = useState<string | null>('');
-  const [email, setEmail] = useState<string | null>(null);
-  const [password, setPassword] = useState<string>('');
-  
+  const [displayName, setDisplayName] = useState<string | null>("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleNewChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     switch (name) {
-      case "fullname":
-        setFullName(value);
+      case "displayName":
+        setDisplayName(value);
         break;
       case "email":
         setEmail(value);
@@ -49,97 +66,188 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-  const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleNewSignUp = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const { error } = await supabase.auth.signUp({
-        email: email!,
-        password: password!,
-        options: {
-          data: {
-            fullname: fullName,
-          },
-        },
-      });
-      if (error) throw error;
-      alert("Check your email for verification link");
+      await createUserWithEmailAndPassword(auth, email, password)
     } catch (e) {
-      console.error(e);
+      alert(e);
     }
   };
 
-  const handleSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleNewSignIn = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email: email!,
-        password: password!,
-      });
-      if (error) throw error;
-    } catch (error) {
-      alert(error);
+      await signInWithEmailAndPassword(auth, email, password).then((data) =>
+        console.log(data)
+      );
+    } catch (e) {
+      alert(e);
     }
   };
 
-  const handleSignOut = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleNewSignOut = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const { error } = await supabase.auth.signOut();
-      setUser(null);
-      if (error) throw error;
-    } catch (error) {
-      console.error(error);
+      await signOut(auth);
+    } catch (e) {
+      alert(e);
     }
-  };
+  }
 
   const signInWithGithub = async () => {
     try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'github',
+      await signInWithPopup(auth, GitHubProvider).then((data) => console.log(data));
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  const signInWithGoogle = async () => {
+    try {
+      await signInWithPopup(auth, GoogleProvider).then((data) => console.log(data));
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  const handleUpdateProfile = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      await updateProfile(auth.currentUser, {
+        displayName: displayName,
       })
-      if (error) throw error;
-    } catch (error) {
-      console.error(error)
+    } catch (e) {
+      alert(e);
     }
   }
 
   useEffect(() => {
-    const { data } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === "SIGNED_IN") {
-        getUser(session?.user);
-        console.log(session?.user)
-      } else if (event === "SIGNED_OUT") {
-        setUser(null);
-      }
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+      console.log("User", currentUser);
     });
-
-    return () => {
-      data?.subscription.unsubscribe();
-    };
+    return unsubscribe();
   }, []);
 
-  const getUser = async (user: User | null | undefined) => {
-    if (user) {
-      setUser(user);
-      setEmail(user.user_metadata.email);
-      setFullName(user.user_metadata.fullname);
-    } else {
-      setUser(null);
-      setEmail(null);
-      setFullName(null);
-    }
-  };
+  
+
+  // const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const { name, value } = e.target;
+  //   switch (name) {
+  //     case "fullname":
+  //       setFullName(value);
+  //       break;
+  //     case "email":
+  //       setEmail(value);
+  //       break;
+  //     case "password":
+  //       setPassword(value);
+  //       break;
+  //     default:
+  //       break;
+  //   }
+  // };
+
+  // const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
+  //   e.preventDefault();
+  //   try {
+  //     const { error } = await supabase.auth.signUp({
+  //       email: email!,
+  //       password: password!,
+  //       options: {
+  //         data: {
+  //           fullname: fullName,
+  //         },
+  //       },
+  //     });
+  //     if (error) throw error;
+  //     alert("Check your email for verification link");
+  //   } catch (e) {
+  //     console.error(e);
+  //   }
+  // };
+
+  // const handleSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
+  //   e.preventDefault();
+  //   try {
+  //     const { error } = await supabase.auth.signInWithPassword({
+  //       email: email!,
+  //       password: password!,
+  //     });
+  //     if (error) throw error;
+  //   } catch (error) {
+  //     alert(error);
+  //   }
+  // };
+
+  // const handleSignOut = async (e: React.FormEvent<HTMLFormElement>) => {
+  //   e.preventDefault();
+  //   try {
+  //     const { error } = await supabase.auth.signOut();
+  //     setUser(null);
+  //     if (error) throw error;
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
+
+  // const signInWithGithub = async () => {
+  //   try {
+  //     const { error } = await supabase.auth.signInWithOAuth({
+  //       provider: "github",
+  //     });
+  //     if (error) throw error;
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   const { data } = supabase.auth.onAuthStateChange((event, session) => {
+  //     if (event === "SIGNED_IN") {
+  //       getUser(session?.user);
+  //       console.log(session?.user);
+  //     } else if (event === "SIGNED_OUT") {
+  //       setUser(null);
+  //     }
+  //   });
+
+  //   return () => {
+  //     data?.subscription.unsubscribe();
+  //   };
+  // }, []);
+
+  // const getUser = async (user: User | null | undefined) => {
+  //   if (user) {
+  //     setUser(user);
+  //     setEmail(user.user_metadata.email);
+  //     setFullName(user.user_metadata.fullname);
+  //   } else {
+  //     setUser(null);
+  //     setEmail(null);
+  //     setFullName(null);
+  //   }
+  // };
 
   const contextValue: AuthContextType = {
-    handleSignOut,
+    // handleSignOut,
     email,
     password,
-    fullName,
+    displayName,
+    // fullName,
     user,
-    handleSignUp,
-    handleSignIn,
-    handleChange,
-    signInWithGithub
+    // handleSignUp,
+    // handleSignIn,
+    // handleChange,
+    // signInWithGithub,
+    handleNewChange,
+    handleNewSignUp,
+    handleNewSignIn,
+    handleNewSignOut,
+    signInWithGithub,
+    handleUpdateProfile,
+    signInWithGoogle
   };
 
   return (

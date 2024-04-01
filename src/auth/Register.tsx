@@ -1,11 +1,20 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Input from "../components/input/Input";
 import Button from "../components/button/Button";
 import ImageComponent from "../components/imageComponent/ImageComponent";
 import { useAuth } from "../context/AuthContext";
+import { useEffect } from "react";
 
 const Register = () => {
-  const {handleSignUp, handleChange} = useAuth();
+  const {handleNewSignUp, handleNewChange, user} = useAuth();
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user !== null) {
+      navigate("/");
+    }
+  }, [user, navigate]);
 
   return (
     <div className="flex text-center flex-col gap-5 items-center w-[400px]">
@@ -25,27 +34,27 @@ const Register = () => {
       </div>
       <form
         className="w-full flex flex-col items-center gap-4"
-        onSubmit={handleSignUp}
+        onSubmit={handleNewSignUp}
       >
-        <Input
+        {/* <Input
           name="fullname"
           type="fullname"
           placeholder="@fullname"
-          onChange={handleChange}
+          onChange={handleNewChange}
           className="w-full h-16 placeholder:text-lg rounded-xl outline-none text-lg px-6"
-        />
+        /> */}
         <Input
           name="email"
           type="email"
           placeholder="Email"
-          onChange={handleChange}
+          onChange={handleNewChange}
           className="w-full h-16 placeholder:text-lg rounded-xl outline-none text-lg px-6"
         />
         <Input
           name="password"
           type="password"
           placeholder="Password"
-          onChange={handleChange}
+          onChange={handleNewChange}
           className="w-full h-16 placeholder:text-lg rounded-xl outline-none text-lg px-6"
         />
         <div className="flex gap-2">

@@ -8,7 +8,7 @@ import { useAuth } from "../context/AuthContext";
 import { FormEvent, useState } from "react";
 
 const Navbar = () => {
-  const { handleSignOut, fullName, user } = useAuth();
+  const { handleNewSignOut, user } = useAuth();
   const [show, setShow] = useState(false);
   const navigate = useNavigate();
 
@@ -22,7 +22,7 @@ const Navbar = () => {
 
   const signOut = (e: FormEvent<HTMLFormElement>) => {
     try {
-      handleSignOut(e);
+      handleNewSignOut(e);
       navigate("/auth/register");
     } catch (error) {
       console.error(error);
@@ -51,7 +51,7 @@ const Navbar = () => {
         <>
           <div className="px-5 flex flex-col items-center">
             <ImageComponent
-              src={user?.user_metadata.avatar_url || '/avatar.png'}
+              src={user?.photoURL || '/avatar.png'}
               alt="Image user"
               className="w-16 h-16 rounded-full border-4 border-white"
             />
@@ -87,11 +87,11 @@ const Navbar = () => {
         <>
           <div className="px-5 flex flex-col justify-center items-center">
             <ImageComponent
-              src={user?.user_metadata.avatar_url || '/avatar.png'}
+              src={user?.photoURL || '/avatar.png'}
               alt="Image user"
               className="w-20 h-20 rounded-full border-4 border-white"
             />
-            <p className="text-white text-xl py-5">@{user?.user_metadata.user_name || fullName}</p>
+            <p className="text-white text-xl py-5">@{user?.displayName || 'Anon'}</p>
             <div className="flex flex-col mt-7 gap-10">
               <NavLink to="/" className="nav_link">
                 <AiOutlineHome size={35} />
