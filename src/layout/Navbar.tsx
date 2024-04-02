@@ -5,7 +5,7 @@ import { BiLogOutCircle } from "react-icons/bi";
 import Button from "../components/button/Button";
 import ImageComponent from "../components/imageComponent/ImageComponent";
 import { useAuth } from "../context/AuthContext";
-import { FormEvent, useState } from "react";
+import { useState } from "react";
 
 const Navbar = () => {
   const { handleNewSignOut, user } = useAuth();
@@ -20,9 +20,9 @@ const Navbar = () => {
     setShow(false);
   };
 
-  const signOut = (e: FormEvent<HTMLFormElement>) => {
+  const signOut = () => {
     try {
-      handleNewSignOut(e);
+      handleNewSignOut();
       navigate("/auth/register");
     } catch (error) {
       console.error(error);

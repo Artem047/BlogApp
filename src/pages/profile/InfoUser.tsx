@@ -14,10 +14,10 @@ const InfoUser = () => {
         <InfoUserItem title="Email" text={`${email || user?.email}`} />
         <InfoUserItem
           title="Name"
-          text={`${user?.email === undefined ? "Anonymous" : user?.email}`}
+          text={`${user?.displayName || "Anonymous"}`}
         />
         <InfoUserItem
-          title="Name"
+          title="Created Date"
           text={`${user?.metadata.creationTime?.substring(0, 16)}`}
         />
       </form>

@@ -37,7 +37,7 @@ interface AuthContextType {
   handleNewSignUp: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
   handleNewSignIn: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
   handleNewChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  handleNewSignOut: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
+  handleNewSignOut: () => void;
   signInWithGithub: () => Promise<void>;
   signInWithGoogle: () => Promise<void>;
   handleUpdateProfile: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
@@ -86,10 +86,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-  const handleNewSignOut = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleNewSignOut =  () => {
     try {
-      await signOut(auth);
+       signOut(auth);
     } catch (e) {
       alert(e);
     }
@@ -107,9 +106,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const signInWithGoogle = async () => {
     try {
-      await signInWithPopup(auth, GoogleProvider).then((data) =>
-        console.log(data)
-      );
+      await signInWithPopup(auth, GoogleProvider).then((data) => {
+        setUser(data.user);
+        console.log(data);
+      });
     } catch (e) {
       console.error(e);
     }
