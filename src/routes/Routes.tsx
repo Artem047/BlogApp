@@ -1,28 +1,30 @@
 import { createBrowserRouter } from "react-router-dom";
-import Root from "../pages/Root";
+import Root from "../layout/Root";
 import Auth from "../auth/Auth";
 import Login from "../auth/Login";
 import Register from "../auth/Register";
-import Home from "../pages/Home";
-import Collection from "../pages/Collection";
-import Profile from "../pages/Profile";
-import ErrorPage from "../error/ErrorPage";
+import Home from "../pages/home/Home";
+import Collection from "../pages/collection/Collection";
+import Profile from "../pages/profile/Profile";
+import ErrorPage from "../pages/error/ErrorPage";
 import Protected from "../components/Protected";
+import ScrollToTop from "../components/ScrollToTop";
 
 export const router = createBrowserRouter([
   {
     path: "/",
     element: (
       <Protected>
-        <Root />
-
+        <ScrollToTop>
+          <Root />
+        </ScrollToTop>
       </Protected>
     ),
     errorElement: <ErrorPage />,
     children: [
       {
         path: "/",
-        element:<Home />,
+        element: <Home />,
       },
       {
         path: "/collection",

@@ -105,7 +105,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       await signInWithPopup(auth, GitHubProvider).then((data) =>{
         setUser(data.user)
         console.log(data)
-
       }
       );
     } catch (e) {
@@ -143,7 +142,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setUser(currentUser);
       console.log("User", currentUser);
     });
-    return unsubscribe();
+    return unsubscribe;
   }, []);
 
   // const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
