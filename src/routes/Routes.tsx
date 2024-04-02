@@ -6,6 +6,7 @@ import Register from "../auth/Register";
 import Home from "../pages/Home";
 import Collection from "../pages/Collection";
 import Profile from "../pages/Profile";
+import ErrorPage from "../error/ErrorPage";
 
 export const router = createBrowserRouter([
   {
@@ -13,6 +14,7 @@ export const router = createBrowserRouter([
     element: (
         <Root />
     ),
+    errorElement: <ErrorPage />,
     children: [
       {
         path: "/",
