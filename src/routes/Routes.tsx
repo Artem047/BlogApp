@@ -7,12 +7,16 @@ import Home from "../pages/Home";
 import Collection from "../pages/Collection";
 import Profile from "../pages/Profile";
 import ErrorPage from "../error/ErrorPage";
+import Protected from "../components/Protected";
 
 export const router = createBrowserRouter([
   {
     path: "/",
     element: (
+      <Protected>
         <Root />
+
+      </Protected>
     ),
     errorElement: <ErrorPage />,
     children: [
