@@ -4,7 +4,7 @@ import Auth from "../auth/Auth";
 import Login from "../auth/Login";
 import Register from "../auth/Register";
 import Home from "../pages/home/Home";
-import Collection from "../pages/collection/Collection";
+import CreatePost from "../pages/post/CreatePost";
 import Profile from "../pages/profile/Profile";
 import ErrorPage from "../pages/error/ErrorPage";
 import Protected from "../components/Protected";
@@ -28,7 +28,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "/collection",
-        element: <Collection />,
+        element: <CreatePost />,
       },
       {
         path: "/profile",

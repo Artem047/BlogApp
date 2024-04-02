@@ -1,6 +1,6 @@
 import { useAuth } from "../../context/AuthContext";
 
-const Collection = () => {
+const CreatePost = () => {
   const { handleChangePost, handleNewPost} = useAuth()
 
   return (
@@ -14,4 +14,4 @@ const Collection = () => {
   );
 };
 
-export default Collection;
+export default CreatePost;

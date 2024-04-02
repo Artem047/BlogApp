@@ -1,11 +1,13 @@
 import { NavLink, useNavigate } from "react-router-dom";
-import { AiOutlineHome, AiOutlineUser, AiOutlineHeart } from "react-icons/ai";
+import { AiOutlineHome, AiOutlineUser } from "react-icons/ai";
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 import { BiLogOutCircle } from "react-icons/bi";
 import Button from "../components/button/Button";
 import ImageComponent from "../components/imageComponent/ImageComponent";
 import { useAuth } from "../context/AuthContext";
 import { useState } from "react";
+import { IoCreateOutline } from "react-icons/io5";
+
 
 const Navbar = () => {
   const { user, handleNewSignOut } = useAuth();
@@ -59,7 +61,7 @@ const Navbar = () => {
                 to="/collection"
                 className=" text-white rounded-md px-6 py-2"
               >
-                <AiOutlineHeart size={35} />
+                <IoCreateOutline size={35} />
               </NavLink>
               <NavLink
                 to="/profile"
@@ -93,7 +95,7 @@ const Navbar = () => {
                 Home
               </NavLink>
               <NavLink to="/collection" className="nav_link">
-                <AiOutlineHeart size={35} />
+                <IoCreateOutline size={35} />
                 Collection
               </NavLink>
               <NavLink to="/profile" className="nav_link">

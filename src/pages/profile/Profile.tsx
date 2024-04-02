@@ -1,6 +1,6 @@
 import ImageComponent from "../../components/imageComponent/ImageComponent";
 import { useAuth } from "../../context/AuthContext";
-import InfoUser from "./info/InfoUser";
+import InfoUser from "./cart/InfoUser";
 
 const Profile = () => {
   const { user } = useAuth();

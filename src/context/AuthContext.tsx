@@ -17,17 +17,12 @@ import {
 } from "firebase/auth";
 import { auth, collectionUsersRef, db, GitHubProvider, GoogleProvider } from "../utils/firebase";
 import { addDoc, deleteDoc, doc, getDocs } from "firebase/firestore";
+import { IUserStorage } from "../interface/user_storage.interface";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 interface AuthProviderProps {
   children: ReactNode;
-}
-interface IUserStorage {
-  id: string;
-  title?: string;
-  description?: number;
-  currentUser?: string;
 }
 interface AuthContextType {
   email: string | null;

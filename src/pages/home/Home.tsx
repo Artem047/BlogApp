@@ -1,19 +1,22 @@
-import { useAuth } from "../../context/AuthContext"
+import { useAuth } from "../../context/AuthContext";
+import CartItem from "../post/cart/CartItem";
 
 const Home = () => {
-  const { posts, handleDeletePost } = useAuth()
+  const { posts } = useAuth();
   return (
-    <div>{posts.map((post) => {
-      return (
-        <div key={post.id}>
-          <h1>{post.title}</h1>
-          <p>{post.description}</p>
-          <span>{post.currentUser}</span>
-          <button onClick={() => handleDeletePost(post.id)}>Delete</button>
-        </div>
-      )
-    })}</div>
-  )
-}
+    <div>
+      {posts.map((post) => {
+        return (
+          <CartItem
+            title={post.title}
+            description={post.description}
+            id={post.id}
+            currentUser={post.currentUser}
+          />
+        );
+      })}
+    </div>
+  );
+};
 
-export default Home
+export default Home;
