@@ -6,7 +6,13 @@ import { useAuth } from "../context/AuthContext";
 import { useEffect } from "react";
 
 const Register = () => {
-  const {handleNewSignUp, handleNewChange, user} = useAuth();
+  const {
+    handleNewSignUp,
+    handleNewChange,
+    user,
+    signInWithGithub,
+    signInWithGoogle,
+  } = useAuth();
 
   const navigate = useNavigate();
 
@@ -20,13 +26,32 @@ const Register = () => {
     <div className="flex text-center flex-col gap-5 items-center w-[400px]">
       <h1 className="font-bold text-4xl">Create Your Accout</h1>
       <p className="text-lg">Sign up into your account</p>
-      <Button
-        className="w-[126px] h-12 bg-[#FFFFFF] rounded-md flex justify-center items-center gap-2 border border-[#DEDEDE] cursor-pointer"
-        type="button"
-      >
-        <ImageComponent src="/github.png" alt="Icon google" className="w-8 h-8" />
-        <p className="text-base">GitHub</p>
-      </Button>
+      <div className="flex gap-4">
+        <Button
+          className="w-[126px] h-12 bg-[#FFFFFF] rounded-md flex justify-center items-center gap-2 border border-[#DEDEDE] cursor-pointer"
+          type="button"
+          onClick={signInWithGoogle}
+        >
+          <ImageComponent
+            src="/google.svg"
+            alt="Icon google"
+            className="w-8 h-8"
+          />
+          <p className="text-base">Google</p>
+        </Button>
+        <Button
+          className="w-[126px] h-12 bg-[#FFFFFF] rounded-md flex justify-center items-center gap-2 border border-[#DEDEDE] cursor-pointer"
+          type="button"
+          onClick={signInWithGithub}
+        >
+          <ImageComponent
+            src="/github.png"
+            alt="Icon google"
+            className="w-8 h-8"
+          />
+          <p className="text-base">GitHub</p>
+        </Button>
+      </div>
       <div className="flex items-center w-full">
         <hr color="#DBDBDB" className="w-full h-0.5" />
         <p className="w-full">Or continue with</p>

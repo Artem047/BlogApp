@@ -6,9 +6,11 @@ import Button from "../components/button/Button";
 import ImageComponent from "../components/imageComponent/ImageComponent";
 import { useAuth } from "../context/AuthContext";
 import { useState } from "react";
+import { auth } from "../utils/firebase";
+import { signOut } from "firebase/auth";
 
 const Navbar = () => {
-  const { handleNewSignOut, user } = useAuth();
+  const { user } = useAuth();
   const [show, setShow] = useState(false);
   const navigate = useNavigate();
 
@@ -20,13 +22,8 @@ const Navbar = () => {
     setShow(false);
   };
 
-  const signOut = () => {
-    try {
-      handleNewSignOut();
-      navigate("/auth/register");
-    } catch (error) {
-      console.error(error);
-    }
+  const handleLogOut = () => {
+    signOut(auth).then(() => navigate('/auth/login'))
   };
   return (
     <nav className="bg-[#00BD97] flex flex-col justify-between items-center rounded-t-xl text-lg max-w-[245px] text-center pt-5 h-[600px] relative">
@@ -76,7 +73,7 @@ const Navbar = () => {
           </div>
           <form
             className=" bg-[#00D2A8] w-full flex justify-center items-center text-white font-bold mt-20 h-12"
-            onSubmit={signOut}
+            onSubmit={handleLogOut}
           >
             <Button type="submit">
               <BiLogOutCircle size={35} />
@@ -109,9 +106,9 @@ const Navbar = () => {
           </div>
           <form
             className=" bg-[#00D2A8] w-full py-4 text-white font-bold mt-20"
-            onSubmit={signOut}
+            // onSuonbmit={signOut}
           >
-            <Button type="submit" className="uppercase ">
+            <Button type="button" className="uppercase" onClick={handleLogOut}>
               logout
             </Button>
           </form>
