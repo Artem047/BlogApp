@@ -6,8 +6,6 @@ import React, {
   useEffect,
   useState,
 } from "react";
-// import { supabase } from "../utils/supabase";
-// import { User } from "@supabase/supabase-js";
 import {
   createUserWithEmailAndPassword,
   onAuthStateChanged,
@@ -17,23 +15,26 @@ import {
   updateProfile,
   User,
 } from "firebase/auth";
-import { auth, GitHubProvider, GoogleProvider } from "../utils/firebase";
+import { auth, collectionUsersRef, db, GitHubProvider, GoogleProvider } from "../utils/firebase";
+import { addDoc, deleteDoc, doc, getDocs } from "firebase/firestore";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 interface AuthProviderProps {
   children: ReactNode;
 }
+interface IUserStorage {
+  id: string;
+  title?: string;
+  description?: number;
+  currentUser?: string;
+}
 interface AuthContextType {
-  // handleSignOut: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
-  // handleSignUp: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
-  // handleSignIn: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
-  // signInWithGithub: () => Promise<void>;
-  // handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   email: string | null;
   displayName: string | null;
   password: string | null;
   user: User | null;
+  posts: IUserStorage[];
   handleNewSignUp: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
   handleNewSignIn: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
   handleNewChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -41,6 +42,9 @@ interface AuthContextType {
   signInWithGithub: () => Promise<void>;
   signInWithGoogle: () => Promise<void>;
   handleUpdateProfile: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
+  handleNewPost: () => Promise<void>;
+  handleDeletePost: (id: string) => Promise<void>;
+  handleChangePost: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
@@ -48,6 +52,39 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [displayName, setDisplayName] = useState<string | null>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [posts, setPosts] = useState<IUserStorage[]>([]);
+
+  const handleChangePost = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    switch (name) {
+      case "title":
+        setTitle(value);
+        break;
+      case "description":
+        setDescription(value);
+        break;
+      default:
+        break;
+    }
+  };
+
+  const handleNewPost = async () => {
+    const currentUser = user ? user.displayName : 'Anonymous';
+    const newUser = {
+      title,
+      description, 
+      currentUser
+    }
+     await addDoc(collectionUsersRef, newUser);
+  }
+
+  const handleDeletePost = async (id: string) => {
+    const userDoc = doc(db, "posts", id);
+    await deleteDoc(userDoc);
+  }
 
   const handleNewChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -138,6 +175,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   useEffect(() => {
+    const getPosts = async () => {
+      const data = await getDocs(collectionUsersRef);
+      setPosts(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+      console.log(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+    };
+    getPosts();
+  }, []);
+
+  useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
       console.log("User", currentUser);
@@ -145,115 +191,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     return unsubscribe;
   }, []);
 
-  // const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const { name, value } = e.target;
-  //   switch (name) {
-  //     case "fullname":
-  //       setFullName(value);
-  //       break;
-  //     case "email":
-  //       setEmail(value);
-  //       break;
-  //     case "password":
-  //       setPassword(value);
-  //       break;
-  //     default:
-  //       break;
-  //   }
-  // };
-
-  // const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
-  //   e.preventDefault();
-  //   try {
-  //     const { error } = await supabase.auth.signUp({
-  //       email: email!,
-  //       password: password!,
-  //       options: {
-  //         data: {
-  //           fullname: fullName,
-  //         },
-  //       },
-  //     });
-  //     if (error) throw error;
-  //     alert("Check your email for verification link");
-  //   } catch (e) {
-  //     console.error(e);
-  //   }
-  // };
-
-  // const handleSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
-  //   e.preventDefault();
-  //   try {
-  //     const { error } = await supabase.auth.signInWithPassword({
-  //       email: email!,
-  //       password: password!,
-  //     });
-  //     if (error) throw error;
-  //   } catch (error) {
-  //     alert(error);
-  //   }
-  // };
-
-  // const handleSignOut = async (e: React.FormEvent<HTMLFormElement>) => {
-  //   e.preventDefault();
-  //   try {
-  //     const { error } = await supabase.auth.signOut();
-  //     setUser(null);
-  //     if (error) throw error;
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
-
-  // const signInWithGithub = async () => {
-  //   try {
-  //     const { error } = await supabase.auth.signInWithOAuth({
-  //       provider: "github",
-  //     });
-  //     if (error) throw error;
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   const { data } = supabase.auth.onAuthStateChange((event, session) => {
-  //     if (event === "SIGNED_IN") {
-  //       getUser(session?.user);
-  //       console.log(session?.user);
-  //     } else if (event === "SIGNED_OUT") {
-  //       setUser(null);
-  //     }
-  //   });
-
-  //   return () => {
-  //     data?.subscription.unsubscribe();
-  //   };
-  // }, []);
-
-  // const getUser = async (user: User | null | undefined) => {
-  //   if (user) {
-  //     setUser(user);
-  //     setEmail(user.user_metadata.email);
-  //     setFullName(user.user_metadata.fullname);
-  //   } else {
-  //     setUser(null);
-  //     setEmail(null);
-  //     setFullName(null);
-  //   }
-  // };
-
   const contextValue: AuthContextType = {
-    // handleSignOut,
     email,
     password,
     displayName,
-    // fullName,
     user,
-    // handleSignUp,
-    // handleSignIn,
-    // handleChange,
-    // signInWithGithub,
+    posts,
     handleNewChange,
     handleNewSignUp,
     handleNewSignIn,
@@ -261,6 +204,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     signInWithGithub,
     handleUpdateProfile,
     signInWithGoogle,
+    handleDeletePost,
+    handleNewPost,
+    handleChangePost
   };
 
   return (
