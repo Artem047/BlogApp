@@ -69,7 +69,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const handleNewSignUp = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
+      await createUserWithEmailAndPassword(auth, email, password).then((data) => {
+        setUser(data.user);
+        console.log(data);
+      })
     } catch (e) {
       alert(e);
     }
@@ -78,8 +81,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const handleNewSignIn = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      await signInWithEmailAndPassword(auth, email, password).then((data) =>
+      await signInWithEmailAndPassword(auth, email, password).then((data) =>{
+        setUser(data.user);
         console.log(data)
+      }
       );
     } catch (e) {
       alert(e);
@@ -89,6 +94,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const handleNewSignOut = async () => {
     try {
       await signOut(auth);
+      setUser(null);
     } catch (e) {
       alert(e);
     }

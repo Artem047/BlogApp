@@ -10,7 +10,7 @@ const Protected = ({ children }: IProps) => {
     const { user } = useAuth();
 
     if(!user) {
-        return <Navigate to={'/auth/register'} />
+        return <Navigate to={'/auth/register'} replace />
     }
   return children;
 }

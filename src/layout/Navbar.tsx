@@ -6,11 +6,9 @@ import Button from "../components/button/Button";
 import ImageComponent from "../components/imageComponent/ImageComponent";
 import { useAuth } from "../context/AuthContext";
 import { useState } from "react";
-import { auth } from "../utils/firebase";
-import { signOut } from "firebase/auth";
 
 const Navbar = () => {
-  const { user } = useAuth();
+  const { user, handleNewSignOut } = useAuth();
   const [show, setShow] = useState(false);
   const navigate = useNavigate();
 
@@ -23,7 +21,7 @@ const Navbar = () => {
   };
 
   const handleLogOut = () => {
-    signOut(auth).then(() => navigate('/auth/login'))
+    handleNewSignOut().then(() => navigate('/auth/register'));
   };
   return (
     <nav className="bg-[#00BD97] flex flex-col justify-between items-center rounded-t-xl text-lg max-w-[245px] text-center pt-5 h-[600px] relative">

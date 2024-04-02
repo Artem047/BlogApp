@@ -18,7 +18,7 @@ const Register = () => {
 
   useEffect(() => {
     if (user !== null) {
-      navigate("/");
+      navigate("/auth/login");
     }
   }, [user, navigate]);
 
