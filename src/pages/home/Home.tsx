@@ -8,9 +8,9 @@ const Home = () => {
   }
   return (
     <div>
-     {posts.map((image) => {
+     {posts.map((post) => {
         return (
-          <CartItem {...image} />
+          <CartItem {...post} />
         );
       })}
     </div>
