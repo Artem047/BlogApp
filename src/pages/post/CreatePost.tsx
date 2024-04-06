@@ -1,12 +1,42 @@
-import { useAuth } from "../../context/AuthContext";
+// import { useAuth } from "../../context/AuthContext";
+
+import { useState } from "react";
+import useStorage from "../../hooks/useStorage";
+import ImageGallery from "../../components/ImageGallery";
 
 const CreatePost = () => {
-  const { handleChangePost, handleNewPost } = useAuth();
+  // const { handleChangePost, handleNewPost } = useAuth();
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const { startUpload, progress } = useStorage();
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setSelectedFile(e.target.files[0]);
+    }
+  };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (selectedFile) {
+      startUpload(selectedFile);
+      console.log(selectedFile);
+    }
+    setSelectedFile(null);
+  };
 
   return (
     <div>
-      <div className="flex flex-col gap-3">
-        <input
+      <form className="flex flex-col gap-3" onSubmit={handleSubmit}>
+        <input type="file" onChange={handleFileChange} />
+        <button
+          type="submit"
+          className={`${Boolean(progress) && "loading"}`}
+          disabled={!selectedFile}
+        >
+          Upload
+        </button>
+        <ImageGallery />
+        {/* <input
           name="title"
           placeholder="Title..."
           onChange={handleChangePost}
@@ -16,8 +46,8 @@ const CreatePost = () => {
           placeholder="Description..."
           onChange={handleChangePost}
         />
-        <button onClick={handleNewPost}>create post</button>
-      </div>
+        <button onClick={handleNewPost}>create post</button> */}
+      </form>
     </div>
   );
 };
