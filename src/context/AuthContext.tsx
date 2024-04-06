@@ -1,4 +1,5 @@
 import React, {
+  ChangeEvent,
   FormEvent,
   ReactNode,
   createContext,
@@ -15,9 +16,18 @@ import {
   updateProfile,
   User,
 } from "firebase/auth";
-import { auth, collectionUsersRef, db, GitHubProvider, GoogleProvider } from "../utils/firebase";
+import {
+  auth,
+  collectionUsersRef,
+  db,
+  GitHubProvider,
+  GoogleProvider,
+  storage,
+} from "../utils/firebase";
 import { addDoc, deleteDoc, doc, getDocs } from "firebase/firestore";
 import { IUserStorage } from "../interface/user_storage.interface";
+import { getDownloadURL, listAll, ref, uploadBytes } from "firebase/storage";
+import { v4 } from "uuid";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -30,6 +40,7 @@ interface AuthContextType {
   password: string | null;
   user: User | null;
   posts: IUserStorage[];
+  imagesUpload: string[];
   handleNewSignUp: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
   handleNewSignIn: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
   handleNewChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -40,6 +51,10 @@ interface AuthContextType {
   handleNewPost: () => Promise<void>;
   handleDeletePost: (id: string) => Promise<void>;
   handleChangePost: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  getPosts: () => Promise<void>;
+  getImages: () => void;
+  uploadImages: () => void;
+  handleChangeImages: (e: ChangeEvent<HTMLInputElement>) => void;
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
@@ -51,6 +66,37 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [posts, setPosts] = useState<IUserStorage[]>([]);
+
+  const [images, setImages] = useState<File | null>(null);
+  const [imagesUpload, setImagesUpload] = useState<string[]>([]);
+
+  const fileRef = ref(storage, `images/`);
+
+  const uploadImages = () => {
+    if (images == null) return;
+    const imageRef = ref(storage, `images/${images.name + v4()}`);
+    uploadBytes(imageRef, images).then((snapshot) => {
+      getDownloadURL(snapshot.ref).then((url) => {
+        setImagesUpload((prev) => [...prev, url]);
+      });
+    });
+  };
+
+  const handleChangeImages = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setImages(e.target.files[0]);
+    }
+  };
+
+  const getImages = () => {
+    listAll(fileRef).then((response) => {
+      response.items.forEach((item) => {
+        getDownloadURL(item).then((url) => {
+          setImagesUpload((prev) => [...prev, url]);
+        });
+      });
+    });
+  };
 
   const handleChangePost = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -67,19 +113,21 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   const handleNewPost = async () => {
-    const currentUser = user ? user.displayName : 'Anonymous';
+    const currentUser = user ? user.displayName : "Anonymous";
+    const currentUserAvatar = user ? user.photoURL : "/profile.svg";
     const newUser = {
       title,
-      description, 
-      currentUser
-    }
-     await addDoc(collectionUsersRef, newUser);
-  }
+      description,
+      currentUser,
+      currentUserAvatar,
+    };
+    await addDoc(collectionUsersRef, newUser);
+  };
 
   const handleDeletePost = async (id: string) => {
     const userDoc = doc(db, "posts", id);
     await deleteDoc(userDoc);
-  }
+  };
 
   const handleNewChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -101,10 +149,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const handleNewSignUp = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      await createUserWithEmailAndPassword(auth, email, password).then((data) => {
-        setUser(data.user);
-        console.log(data);
-      })
+      await createUserWithEmailAndPassword(auth, email, password).then(
+        (data) => {
+          setUser(data.user);
+          console.log(data);
+        }
+      );
     } catch (e) {
       alert(e);
     }
@@ -113,11 +163,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const handleNewSignIn = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      await signInWithEmailAndPassword(auth, email, password).then((data) =>{
+      await signInWithEmailAndPassword(auth, email, password).then((data) => {
         setUser(data.user);
-        console.log(data)
-      }
-      );
+        console.log(data);
+      });
     } catch (e) {
       alert(e);
     }
@@ -134,11 +183,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const signInWithGithub = async () => {
     try {
-      await signInWithPopup(auth, GitHubProvider).then((data) =>{
-        setUser(data.user)
-        console.log(data)
-      }
-      );
+      await signInWithPopup(auth, GitHubProvider).then((data) => {
+        setUser(data.user);
+        console.log(data);
+      });
     } catch (e) {
       console.error(e);
     }
@@ -169,12 +217,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
+  const getPosts = async () => {
+    const data = await getDocs(collectionUsersRef);
+    setPosts(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+    console.log(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+  };
+
   useEffect(() => {
-    const getPosts = async () => {
-      const data = await getDocs(collectionUsersRef);
-      setPosts(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
-      console.log(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
-    };
     getPosts();
   }, []);
 
@@ -192,6 +241,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     displayName,
     user,
     posts,
+    imagesUpload,
     handleNewChange,
     handleNewSignUp,
     handleNewSignIn,
@@ -201,7 +251,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     signInWithGoogle,
     handleDeletePost,
     handleNewPost,
-    handleChangePost
+    handleChangePost,
+    uploadImages,
+    getImages,
+    handleChangeImages,
+    getPosts,
   };
 
   return (

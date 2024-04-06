@@ -3,4 +3,5 @@ export interface IUserStorage {
     title?: string;
     description?: number;
     currentUser?: string;
+    currentUserAvatar?: string;
 }
