@@ -1,20 +1,16 @@
-import { useAuth } from "../../context/AuthContext";
+import useFirestore from "../../hooks/useFirestore";
 import CartItem from "../post/cart/CartItem";
 
 const Home = () => {
-  const { posts } = useAuth();
+  const { docs: posts, isLoading } = useFirestore("posts");
+  if (isLoading) {
+    return <p>Loading...</p>;
+  }
   return (
     <div>
-      {posts.map((post) => {
+     {posts.map((image) => {
         return (
-          <CartItem
-            key={post.id}
-            title={post.title}
-            description={post.description}
-            id={post.id}
-            currentUser={post.currentUser}
-            currentUserAvatar={post.currentUserAvatar}
-          />
+          <CartItem {...image} />
         );
       })}
     </div>

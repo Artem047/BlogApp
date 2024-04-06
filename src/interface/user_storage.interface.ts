@@ -1,7 +1,5 @@
-export interface IUserStorage {
-    id: string;
-    title?: string;
-    description?: number;
-    currentUser?: string;
-    currentUserAvatar?: string;
+export interface IPosts {
+    imageUrl: string,
+    title: string,
+    description: string
 }

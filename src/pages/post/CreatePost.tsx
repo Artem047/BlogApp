@@ -1,11 +1,10 @@
-// import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../context/AuthContext";
 
 import { useState } from "react";
 import useStorage from "../../hooks/useStorage";
-import ImageGallery from "../../components/ImageGallery";
 
 const CreatePost = () => {
-  // const { handleChangePost, handleNewPost } = useAuth();
+  const { handleChangePost } = useAuth();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const { startUpload, progress } = useStorage();
 
@@ -27,16 +26,7 @@ const CreatePost = () => {
   return (
     <div>
       <form className="flex flex-col gap-3" onSubmit={handleSubmit}>
-        <input type="file" onChange={handleFileChange} />
-        <button
-          type="submit"
-          className={`${Boolean(progress) && "loading"}`}
-          disabled={!selectedFile}
-        >
-          Upload
-        </button>
-        <ImageGallery />
-        {/* <input
+      <input
           name="title"
           placeholder="Title..."
           onChange={handleChangePost}
@@ -46,7 +36,14 @@ const CreatePost = () => {
           placeholder="Description..."
           onChange={handleChangePost}
         />
-        <button onClick={handleNewPost}>create post</button> */}
+        <input type="file" onChange={handleFileChange} />
+        <button
+          type="submit"
+          className={`${Boolean(progress) && "loading"}`}
+          disabled={!selectedFile}
+        >
+          Upload
+        </button>
       </form>
     </div>
   );

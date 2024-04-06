@@ -1,14 +1,10 @@
 import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
 import { useEffect, useState } from "react"
 import { db } from "../utils/firebase";
+import { IPosts } from "../interface/user_storage.interface";
 
-type Image = {
-    createdAt: Date,
-    userEmail: string,
-    imageUrl: string
-}
 const useFirestore = (collectionName: string) => {
-    const [docs, setDocs] = useState<Image[]>([]);
+    const [docs, setDocs] = useState<IPosts[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
 
     useEffect(() => {
@@ -16,20 +12,20 @@ const useFirestore = (collectionName: string) => {
 
         const getData = async () => {
             try {
-               const q = query(collection(db, collectionName), orderBy('createdAt', 'desc'));
+               const q = query(collection(db, collectionName), orderBy('title', 'desc'));
             unsubscribe = onSnapshot(q, (querySnapshot) => {
-                const images: Image[] = [];
+                const posts: IPosts[] = [];
                 querySnapshot.forEach((doc) => {
                     const imageUrl = doc.data().imageUrl;
-                    const createdAt = doc.data().createdAt.toDate();
-                    const userEmail = doc.data().userEmail;
-                    images.push({
-                        createdAt,
-                        userEmail,
+                    const title = doc.data().title;
+                    const description = doc.data().description;
+                    posts.push({
+                        title,
+                        description,
                         imageUrl
                     });
                 })
-               setDocs(images);
+               setDocs(posts);
                setIsLoading(false)
                })
             } catch (error) {

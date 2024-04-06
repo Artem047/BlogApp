@@ -8,7 +8,7 @@ import { useAuth } from "../context/AuthContext";
 const useStorage = () => {
   const [progress, setProgress] = useState<number>(0);
   const [error, setError] = useState<Error | null>(null);
-  const { user } = useAuth();
+  const { title, description } = useAuth();
 
 
   const startUpload = (file: File) => {
@@ -17,7 +17,7 @@ const useStorage = () => {
     }
     const fileId = v4();
     const formatFile = file.type.split("/")[1];
-    const storageRef = ref(storage, `images/${fileId}.${formatFile}`);
+    const storageRef = ref(storage, `posts/${fileId}.${formatFile}`);
     const uploadTask = uploadBytesResumable(storageRef, file);
 
     uploadTask.on(
@@ -34,10 +34,10 @@ const useStorage = () => {
         const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
         setProgress(progress);
 
-        await addDoc(collection(db, 'images'), {
+        await addDoc(collection(db, 'posts'), {
             imageUrl: downloadURL,
-            createdAt: new Date(),
-            userEmail: user?.email,
+            title: title,
+            description: description,
           })
       });
   };

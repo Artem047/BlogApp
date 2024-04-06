@@ -1,15 +1,11 @@
-import { useAuth } from "../../../context/AuthContext";
-import { IUserStorage } from "../../../interface/user_storage.interface";
+import { IPosts } from "../../../interface/user_storage.interface";
 
-const CartItem = ({ id, title, description, currentUser, currentUserAvatar }: IUserStorage) => {
-    const { handleDeletePost } = useAuth();
+const CartItem = ({ title, description, imageUrl }: IPosts) => {
   return (
-    <div key={id}>
+    <div key={imageUrl} className="bg-gray-300 max-w-[450px] w-full rounded-xl p-3">
+      <img src={imageUrl} alt="" />
       <h1>{title}</h1>
       <p>{description}</p>
-      <span>{currentUser}</span>
-      <img src={currentUserAvatar} alt="" />
-      <button onClick={() => handleDeletePost(id)}>Delete</button>
     </div>
   );
 };
