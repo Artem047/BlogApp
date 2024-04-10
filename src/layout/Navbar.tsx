@@ -6,7 +6,6 @@ import Button from "../components/button/Button";
 import ImageComponent from "../components/imageComponent/ImageComponent";
 import { useAuth } from "../context/AuthContext";
 import { useState } from "react";
-import { IoCreateOutline } from "react-icons/io5";
 
 
 const Navbar = () => {
@@ -58,12 +57,6 @@ const Navbar = () => {
                 <AiOutlineHome size={35} />
               </NavLink>
               <NavLink
-                to="/collection"
-                className=" text-white rounded-md px-6 py-2"
-              >
-                <IoCreateOutline size={35} />
-              </NavLink>
-              <NavLink
                 to="/profile"
                 className=" text-white rounded-md px-6 py-2"
               >
@@ -84,7 +77,7 @@ const Navbar = () => {
         <>
           <div className="px-5 flex flex-col justify-center items-center">
             <ImageComponent
-              src={user?.photoURL || '/avatar.png'}
+              src={user?.photoURL == null ? '/avatar.png' : user.photoURL}
               alt="Image user"
               className="w-20 h-20 rounded-full border-4 border-white"
             />
@@ -94,10 +87,6 @@ const Navbar = () => {
                 <AiOutlineHome size={35} />
                 Home
               </NavLink>
-              <NavLink to="/collection" className="nav_link">
-                <IoCreateOutline size={35} />
-                Collection
-              </NavLink>
               <NavLink to="/profile" className="nav_link">
                 <AiOutlineUser size={35} />
                 Profile
@@ -106,7 +95,6 @@ const Navbar = () => {
           </div>
           <form
             className=" bg-[#00D2A8] w-full py-4 text-white font-bold mt-20"
-            // onSuonbmit={signOut}
           >
             <Button type="button" className="uppercase" onClick={handleLogOut}>
               logout

@@ -25,13 +25,13 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 interface AuthProviderProps {
   children: ReactNode;
 }
-interface AuthContextType {
+type AuthContextType = {
   email: string | null;
   displayName: string | null;
   password: string | null;
   user: User | null;
   title: string;
-  description: string;
+  setUser: (user: User | null) => void;
   handleNewSignUp: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
   handleNewSignIn: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
   handleNewChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -48,16 +48,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [password, setPassword] = useState<string>("");
 
   const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
 
   const handleChangePost = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     switch (name) {
       case "title":
         setTitle(value);
-        break;
-      case "description":
-        setDescription(value);
         break;
       default:
         break;
@@ -138,7 +134,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
@@ -160,7 +155,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     signInWithGoogle,
     handleChangePost,
     title,
-    description,
+    setUser
   };
 
   return (

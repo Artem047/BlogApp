@@ -8,7 +8,7 @@ import { useAuth } from "../context/AuthContext";
 const useStorage = () => {
   const [progress, setProgress] = useState<number>(0);
   const [error, setError] = useState<Error | null>(null);
-  const { title, description, user } = useAuth();
+  const { title, user } = useAuth();
 
 
   const startUpload = (file: File) => {
@@ -37,7 +37,6 @@ const useStorage = () => {
         await addDoc(collection(db, 'posts'), {
             imageUrl: downloadURL,
             title: title,
-            description: description,
             displayName: user?.displayName,
             imageAvatar: user?.photoURL,
             email: user?.email,

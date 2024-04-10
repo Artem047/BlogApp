@@ -1,7 +1,7 @@
 import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { db } from "../utils/firebase";
-import { IPosts } from "../interface/user_storage.interface";
+import { IPosts } from "../interface/post_storage.interface";
 
 const useFirestore = (collectionName: string) => {
   const [docs, setDocs] = useState<IPosts[]>([]);
@@ -14,21 +14,19 @@ const useFirestore = (collectionName: string) => {
       try {
         const q = query(
           collection(db, collectionName),
-          orderBy("title", "desc")
+          orderBy("createdAt", "desc")
         );
         unsubscribe = onSnapshot(q, (querySnapshot) => {
           const posts: IPosts[] = [];
           querySnapshot.forEach((doc) => {
             const imageUrl = doc.data().imageUrl;
             const title = doc.data().title;
-            const description = doc.data().description;
             const displayName = doc.data().displayName;
             const imageAvatar = doc.data().imageAvatar;
             const email = doc.data().email;
             const createdAt = doc.data().createdAt.toDate();
             posts.push({
               title,
-              description,
               imageUrl,
               displayName,
               imageAvatar,
