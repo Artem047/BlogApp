@@ -61,13 +61,6 @@ const Register = () => {
         className="w-full flex flex-col items-center gap-4"
         onSubmit={handleNewSignUp}
       >
-        {/* <Input
-          name="fullname"
-          type="fullname"
-          placeholder="@fullname"
-          onChange={handleNewChange}
-          className="w-full h-16 placeholder:text-lg rounded-xl outline-none text-lg px-6"
-        /> */}
         <Input
           name="email"
           type="email"

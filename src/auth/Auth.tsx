@@ -6,7 +6,11 @@ const Auth = () => {
   return (
     <div className="bg-[#F2F2F2] w-full h-screen relative">
       <Header />
-      <ImageComponent src="/auth.png" alt="People image" className="absolute top-0 right-0 h-full" />
+      <ImageComponent
+        src="/auth.png"
+        alt="People image"
+        className="hidden xl:block absolute top-0 right-0 h-full"
+      />
       <div className="px-[230px] mt-16">
         <Outlet />
       </div>

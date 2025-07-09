@@ -7,16 +7,13 @@ import Home from "../pages/home/Home";
 import Profile from "../pages/profile/Profile";
 import ErrorPage from "../pages/error/ErrorPage";
 import Protected from "../components/Protected";
-import ScrollToTop from "../components/ScrollToTop";
 
 export const router = createBrowserRouter([
   {
     path: "/",
     element: (
       <Protected>
-        <ScrollToTop>
           <Root />
-        </ScrollToTop>
       </Protected>
     ),
     errorElement: <ErrorPage />,
